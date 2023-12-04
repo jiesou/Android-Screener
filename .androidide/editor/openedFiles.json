@@ -1,0 +1,50 @@
+{
+  "allFiles": [
+    {
+      "file": "/storage/emulated/0/AndroidIDEProjects/Screener/app/src/main/java/top/jiecs/screener/ui/resolution/ResolutionFragment.kt",
+      "selection": {
+        "end": {
+          "column": 0,
+          "index": 0,
+          "line": 0
+        },
+        "start": {
+          "column": 0,
+          "index": 0,
+          "line": 0
+        }
+      }
+    },
+    {
+      "file": "/storage/emulated/0/AndroidIDEProjects/Screener/app/src/main/java/top/jiecs/screener/MainActivity.kt",
+      "selection": {
+        "end": {
+          "column": 66,
+          "index": 1095,
+          "line": 29
+        },
+        "start": {
+          "column": 66,
+          "index": 1095,
+          "line": 29
+        }
+      }
+    },
+    {
+      "file": "/storage/emulated/0/AndroidIDEProjects/Screener/app/src/main/res/layout/fragment_resolution.xml",
+      "selection": {
+        "end": {
+          "column": 4,
+          "index": 972,
+          "line": 23
+        },
+        "start": {
+          "column": 4,
+          "index": 972,
+          "line": 23
+        }
+      }
+    }
+  ],
+  "selectedFile": "/storage/emulated/0/AndroidIDEProjects/Screener/app/src/main/res/layout/fragment_resolution.xml"
+}
