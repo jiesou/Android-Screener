@@ -4,5 +4,8 @@
     <string name="resolution">Resolution</string>
     <string name="frame_rate">Frame Rate</string>
     <string name="settings">Settings</string>
-
+	<string name="height">Height</string>
+	<string name="weight">Weight</string>
+	<string name="apply">Apply</string>
+	
 </resources>

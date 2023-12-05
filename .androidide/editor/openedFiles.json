@@ -1,17 +1,17 @@
 {
   "allFiles": [
     {
-      "file": "/storage/emulated/0/AndroidIDEProjects/Screener/app/src/main/java/top/jiecs/screener/ui/resolution/ResolutionFragment.kt",
+      "file": "/storage/emulated/0/AndroidIDEProjects/Screener/app/build.gradle",
       "selection": {
         "end": {
-          "column": 0,
-          "index": 0,
-          "line": 0
+          "column": 19,
+          "index": 963,
+          "line": 49
         },
         "start": {
-          "column": 0,
-          "index": 0,
-          "line": 0
+          "column": 19,
+          "index": 963,
+          "line": 49
         }
       }
     },
@@ -19,32 +19,17 @@
       "file": "/storage/emulated/0/AndroidIDEProjects/Screener/app/src/main/java/top/jiecs/screener/MainActivity.kt",
       "selection": {
         "end": {
-          "column": 66,
-          "index": 1095,
-          "line": 29
+          "column": 14,
+          "index": 2372,
+          "line": 59
         },
         "start": {
-          "column": 66,
-          "index": 1095,
-          "line": 29
-        }
-      }
-    },
-    {
-      "file": "/storage/emulated/0/AndroidIDEProjects/Screener/app/src/main/res/layout/fragment_resolution.xml",
-      "selection": {
-        "end": {
-          "column": 4,
-          "index": 972,
-          "line": 23
-        },
-        "start": {
-          "column": 4,
-          "index": 972,
-          "line": 23
+          "column": 14,
+          "index": 2372,
+          "line": 59
         }
       }
     }
   ],
-  "selectedFile": "/storage/emulated/0/AndroidIDEProjects/Screener/app/src/main/res/layout/fragment_resolution.xml"
+  "selectedFile": "/storage/emulated/0/AndroidIDEProjects/Screener/app/src/main/java/top/jiecs/screener/MainActivity.kt"
 }
