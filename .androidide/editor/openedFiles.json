@@ -4,44 +4,14 @@
       "file": "/storage/emulated/0/AndroidIDEProjects/Screener/app/src/main/res/layout/fragment_resolution.xml",
       "selection": {
         "end": {
-          "column": 0,
-          "index": 0,
-          "line": 0
+          "column": 59,
+          "index": 2068,
+          "line": 49
         },
         "start": {
-          "column": 0,
-          "index": 0,
-          "line": 0
-        }
-      }
-    },
-    {
-      "file": "/storage/emulated/0/AndroidIDEProjects/Screener/app/src/main/java/top/jiecs/screener/MainActivity.kt",
-      "selection": {
-        "end": {
-          "column": 21,
-          "index": 1744,
-          "line": 48
-        },
-        "start": {
-          "column": 21,
-          "index": 1744,
-          "line": 48
-        }
-      }
-    },
-    {
-      "file": "/storage/emulated/0/AndroidIDEProjects/Screener/app/src/main/res/layout/activity_main.xml",
-      "selection": {
-        "end": {
-          "column": 40,
-          "index": 295,
-          "line": 5
-        },
-        "start": {
-          "column": 40,
-          "index": 295,
-          "line": 5
+          "column": 6,
+          "index": 2015,
+          "line": 49
         }
       }
     },
@@ -59,7 +29,52 @@
           "line": 6
         }
       }
+    },
+    {
+      "file": "/storage/emulated/0/AndroidIDEProjects/Screener/app/src/main/java/top/jiecs/screener/ui/resolution/ResolutionFragment.kt",
+      "selection": {
+        "end": {
+          "column": 64,
+          "index": 1178,
+          "line": 37
+        },
+        "start": {
+          "column": 64,
+          "index": 1178,
+          "line": 37
+        }
+      }
+    },
+    {
+      "file": "/storage/emulated/0/AndroidIDEProjects/Screener/app/src/main/java/top/jiecs/screener/ui/resolution/ResolutionViewModel.kt",
+      "selection": {
+        "end": {
+          "column": 30,
+          "index": 674,
+          "line": 22
+        },
+        "start": {
+          "column": 8,
+          "index": 652,
+          "line": 22
+        }
+      }
+    },
+    {
+      "file": "/storage/emulated/0/AndroidIDEProjects/Screener/app/src/main/java/top/jiecs/screener/MainActivity.kt",
+      "selection": {
+        "end": {
+          "column": 51,
+          "index": 1696,
+          "line": 47
+        },
+        "start": {
+          "column": 51,
+          "index": 1696,
+          "line": 47
+        }
+      }
     }
   ],
-  "selectedFile": "/storage/emulated/0/AndroidIDEProjects/Screener/app/src/main/java/top/jiecs/screener/MainActivity.kt"
+  "selectedFile": "/storage/emulated/0/AndroidIDEProjects/Screener/app/src/main/java/top/jiecs/screener/ui/resolution/ResolutionViewModel.kt"
 }
