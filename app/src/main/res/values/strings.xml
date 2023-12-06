@@ -4,6 +4,7 @@
     <string name="resolution">Resolution</string>
     <string name="frame_rate">Frame Rate</string>
     <string name="settings">Settings</string>
+    <string name="shizuku_not_available">Shizuku is not available</string>
 	<string name="height">Height</string>
 	<string name="weight">Weight</string>
 	<string name="apply">Apply</string>
