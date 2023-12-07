@@ -6,6 +6,7 @@ import androidx.lifecycle.ViewModel
 
 import android.view.Display
 import android.util.DisplayMetrics
+import android.view.WindowManager
 
 class ResolutionViewModel : ViewModel() {
 
@@ -14,16 +15,15 @@ class ResolutionViewModel : ViewModel() {
     }
     val text: LiveData<String> = _text
     
-    private val _resolutionPair = MutableLiveData<Pair<Int, Int>>()
-    val resolutionPair: LiveData<Pair<Int, Int>> = _resolutionPair
+    private val _resolutionMap = MutableLiveData<Map<String, Int>>()
+    val resolutionMap: LiveData<Map<String, Int>> = _resolutionMap
 
-    fun fetchScreenResolution(display: Display) { 
-        val metrics = DisplayMetrics()
+    fun fetchScreenResolution(windowManager: WindowManager) { 
+        val metrics = windowManager.currentWindowMetrics
 
-        display.getRealMetrics(metrics)
-
-        val width = metrics.widthPixels
-        val height = metrics.heightPixels
-        _resolutionPair.value = Pair(width, height)
+        _resolutionMap.value = mapOf(
+          "height" to metrics.heightPixels,
+          "width" to metrics.widthPixels,
+          "dpi" to metrics.densityDpi)
     }
 }
