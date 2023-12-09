@@ -6,7 +6,13 @@
     <string name="settings">Settings</string>
     <string name="shizuku_not_available">Shizuku is not available</string>
 	<string name="height">Height</string>
-	<string name="weight">Weight</string>
+	<string name="width">Width</string>
+    <string name="dpi">DPI</string>
+    <string name="auto_dpi"></string>
 	<string name="apply">Apply</string>
-	
+    <string name="reset">Reset</string>
+    <string name="success">Success</string>
+    <string name="reset_hint">If you wish to undo the changes, wait 10 seconds to resume.</string>
+    <string name="looks_fine">Looks Fine</string>
+	<string name="undo_changes">Undo Changes</string>
 </resources>

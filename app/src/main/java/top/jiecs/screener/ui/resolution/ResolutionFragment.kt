@@ -12,8 +12,15 @@ import top.jiecs.screener.databinding.FragmentResolutionBinding
 import android.content.Context
 import android.view.Display
 import android.view.WindowManager
+//import android.view.IWindowManager
+// import android.view.WindowManagerGlobal
+//import com.android.server.wm.WindowManagerService
+import org.lsposed.hiddenapibypass.HiddenApiBypass
+import rikka.shizuku.ShizukuBinderWrapper
+import rikka.shizuku.SystemServiceHelper
 
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
+import android.util.Log
 
 class ResolutionFragment : Fragment() {
 
@@ -58,10 +65,14 @@ class ResolutionFragment : Fragment() {
               textWidth.text.toString().toInt(),
               textDpi.text.toString().toInt())
         }
+        binding.btReset.setOnClickListener {
+            resetResolution()
+        }
         return root
     }
     
     fun applyResolution(height: Int, width: Int, dpi: Int) {
+        Log.d("screener", "apply")
         //val displayManager: DisplayManager = context.getSystemService(Context.DISPLAY_SERVICE)
         //val display = displayManager.getDisplay(Display.DEFAULT_DISPLAY)
 
@@ -71,16 +82,33 @@ class ResolutionFragment : Fragment() {
         //displayManager.changeDisplayAttributes(display, size, densityDpi)
         
         // reset display if no action in 10s
-        MaterialAlertDialogBuilder(requireContext())
-          .setTitle(R.string.success)
-          .setMessage(getString(R.string.reset_hint))
-          .setPositiveButton(getString(R.string.looks_fine), null)
-          .setNegativeButton(getString(R.string.undo_changes)) { _, _ ->
+       // MaterialAlertDialogBuilder(requireContext())
+      //    .setTitle()
+        //  .setMessage(getString(R.string.reset_hint))
+         // .setPositiveButton(getString(R.string.looks_fine), null)
+        //  .setNegativeButton(getString(R.string.undo_changes)) { _, _ ->
               // val size = android.util.Size(width, height)
               // val densityDpi = 560
               // displayManager.changeDisplayAttributes(display, size, densityDpi)
-          }
-          .show()
+       //   }
+       //   .show()
+    }
+    
+    private fun asInterface(className: String, serviceName: String): Any =
+        ShizukuBinderWrapper(SystemServiceHelper.getSystemService(serviceName)).let {
+            Class.forName("$className\$Stub").run {
+                HiddenApiBypass.invoke(this, null, "asInterface", it)
+            }
+        }
+        
+    fun resetResolution() {
+        val service = asInterface("android.view.IWindowManager", "window")
+        //val service = WindowManagerGlobal.getWindowManagerService()
+        HiddenApiBypass.invoke(service::class.java, service,
+          "clearForcedDisplaySize", Display.DEFAULT_DISPLAY)
+        //val service = IWindowManager.Stub.asInterface(ServiceManager.getService(Context.WINDOW_SERVICE));
+        
+        //service.clearForcedDisplaySize(Display.DEFAULT_DISPLAY);
     }
 
     override fun onDestroyView() {

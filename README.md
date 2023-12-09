@@ -1,2 +1,4 @@
 # Android-Screener
-A Shizuku/ROOT tool for easily adjusting screen resolution and frame rate
+A simple Shizuku tool for easily adjusting screen resolution and frame rate
+
+> Still under development

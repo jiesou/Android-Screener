@@ -45,7 +45,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     private val REQUEST_PERMISSION_RESULT_LISTENER =
-      Shizuku.OnRequestPermissionResultListener { requestCode, grantResult ->
+      Shizuku.OnRequestPermissionResultListener { _, grantResult ->
       // Show message based on the result
       if (grantResult != PackageManager.PERMISSION_GRANTED) {
         Snackbar.make(binding.root, R.string.shizuku_not_available,

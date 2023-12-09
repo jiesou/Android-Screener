@@ -19,11 +19,11 @@ class ResolutionViewModel : ViewModel() {
     val resolutionMap: LiveData<Map<String, Int>> = _resolutionMap
 
     fun fetchScreenResolution(windowManager: WindowManager) { 
-        val metrics = windowManager.currentWindowMetrics
+        val metrics = windowManager.currentWindowMetrics.bounds
 
         _resolutionMap.value = mapOf(
-          "height" to metrics.heightPixels,
-          "width" to metrics.widthPixels,
-          "dpi" to metrics.densityDpi)
+          "height" to metrics.height(),
+          "width" to metrics.width(),
+          "dpi" to 520)
     }
 }
