@@ -96,8 +96,9 @@
          android:layout_marginEnd="8dp"
          android:layout_marginTop="8dp"
          android:layout_marginStart="8dp"
-        app:layout_constraintTop_toBottomOf="@+id/silder_scale"
+         app:layout_constraintTop_toBottomOf="@+id/silder_scale"
          app:layout_constraintStart_toEndOf="@+id/bt_apply"
+         style="?attr/materialButtonOutlinedStyle"
          android:id="@+id/bt_reset"
          android:text="@string/reset" />
 

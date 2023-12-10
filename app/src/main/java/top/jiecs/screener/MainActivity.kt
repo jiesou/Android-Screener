@@ -6,6 +6,8 @@ import androidx.navigation.findNavController
 import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.setupActionBarWithNavController
 import androidx.navigation.ui.setupWithNavController
+import com.google.android.material.bottomnavigation.BottomNavigationView
+import top.jiecs.screener.databinding.ActivityMainBinding
 
 import com.google.android.material.snackbar.Snackbar
 
@@ -13,11 +15,6 @@ import rikka.shizuku.Shizuku
 import rikka.shizuku.ShizukuBinderWrapper
 import rikka.shizuku.ShizukuSystemProperties
 import android.content.pm.PackageManager
-
-
-import com.google.android.material.bottomnavigation.BottomNavigationView
-
-import top.jiecs.screener.databinding.ActivityMainBinding
 
 class MainActivity : AppCompatActivity() {
 

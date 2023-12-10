@@ -12,9 +12,7 @@ import top.jiecs.screener.databinding.FragmentResolutionBinding
 import android.content.Context
 import android.view.Display
 import android.view.WindowManager
-//import android.view.IWindowManager
-// import android.view.WindowManagerGlobal
-//import com.android.server.wm.WindowManagerService
+
 import org.lsposed.hiddenapibypass.HiddenApiBypass
 import rikka.shizuku.ShizukuBinderWrapper
 import rikka.shizuku.SystemServiceHelper
@@ -82,16 +80,14 @@ class ResolutionFragment : Fragment() {
         //displayManager.changeDisplayAttributes(display, size, densityDpi)
         
         // reset display if no action in 10s
-       // MaterialAlertDialogBuilder(requireContext())
-      //    .setTitle()
-        //  .setMessage(getString(R.string.reset_hint))
-         // .setPositiveButton(getString(R.string.looks_fine), null)
-        //  .setNegativeButton(getString(R.string.undo_changes)) { _, _ ->
-              // val size = android.util.Size(width, height)
-              // val densityDpi = 560
-              // displayManager.changeDisplayAttributes(display, size, densityDpi)
-       //   }
-       //   .show()
+        MaterialAlertDialogBuilder(requireContext())
+          .setTitle(getString(R.string.success))
+          .setMessage(getString(R.string.reset_hint))
+          .setPositiveButton(getString(R.string.looks_fine), null)
+          .setNegativeButton(getString(R.string.undo_changes)) { _, _ ->
+               resetResolution()
+          }
+          .show()
     }
     
     private fun asInterface(className: String, serviceName: String): Any =
