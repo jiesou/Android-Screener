@@ -9,9 +9,14 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import top.jiecs.screener.databinding.FragmentResolutionBinding
 
+import top.jiecs.screener.R
 import android.content.Context
 import android.view.Display
 import android.view.WindowManager
+import android.os.Handler
+import android.content.DialogInterface
+import java.util.concurrent.Executors
+import java.lang.Runnable
 
 import org.lsposed.hiddenapibypass.HiddenApiBypass
 import rikka.shizuku.ShizukuBinderWrapper
@@ -80,7 +85,7 @@ class ResolutionFragment : Fragment() {
         //displayManager.changeDisplayAttributes(display, size, densityDpi)
         
         // reset display if no action in 10s
-        MaterialAlertDialogBuilder(requireContext())
+        val dialog = MaterialAlertDialogBuilder(requireContext())
           .setTitle(getString(R.string.success))
           .setMessage(getString(R.string.reset_hint))
           .setPositiveButton(getString(R.string.looks_fine), null)
@@ -88,6 +93,27 @@ class ResolutionFragment : Fragment() {
                resetResolution()
           }
           .show()
+          
+        val negativeButton = dialog.getButton(DialogInterface.BUTTON_NEGATIVE)
+        var countdown = 10
+        val handler = Handler()
+        val runnable = object : Runnable {
+          override fun run() {
+            negativeButton.text = "${getString(R.string.undo_changes)} ($countdown s)"
+
+            if (countdown <= 0) {
+              if (dialog.isShowing) negativeButton.performClick()
+              // handler.removeCallbacks(runnable)
+            }
+            countdown--
+            handler.postDelayed(this, 1000)
+          }
+        }
+
+        handler.post(runnable)
+        
+        
+        
     }
     
     private fun asInterface(className: String, serviceName: String): Any =
