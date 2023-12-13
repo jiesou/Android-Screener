@@ -33,6 +33,8 @@ class ResolutionFragment : Fragment() {
     private val binding get() = _binding!!
     
     private lateinit var windowManager: WindowManager
+    
+    private lateinit var iWindowManager: Any
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -46,6 +48,7 @@ class ResolutionFragment : Fragment() {
         val root: View = binding.root
         
         windowManager = requireActivity().windowManager
+        iWindowManager = asInterface("android.view.IWindowManager", "window")
         resolutionViewModel.fetchScreenResolution(windowManager)
         
         val textHeight = binding.textHeight.editText!!
@@ -82,15 +85,10 @@ class ResolutionFragment : Fragment() {
     
     fun applyResolution(height: Int, width: Int, dpi: Int) {
         Log.d("screener", "apply")
-        //val displayManager: DisplayManager = context.getSystemService(Context.DISPLAY_SERVICE)
-        //val display = displayManager.getDisplay(Display.DEFAULT_DISPLAY)
-
-        //val size = android.util.Size(width, height)
-        //val densityDpi = 560
-
-        //displayManager.changeDisplayAttributes(display, size, densityDpi)
         
-        // reset display if no action in 10s
+        HiddenApiBypass.invoke(iWindowManager::class.java, iWindowManager,
+          "setForcedDisplaySize", Display.DEFAULT_DISPLAY, width, height)
+        
         val dialog = MaterialAlertDialogBuilder(requireContext())
           .setTitle(getString(R.string.success))
           .setMessage(getString(R.string.reset_hint))
@@ -103,27 +101,31 @@ class ResolutionFragment : Fragment() {
           
         val negativeButton = dialog.getButton(DialogInterface.BUTTON_NEGATIVE)
         var countdown = 10
-        val handler = Handler()
-        
-        Handler(Looper.getMainLooper())
-          .post(object : Runnable {
+        val handler = Handler(Looper.getMainLooper())
+        val runnable = object : Runnable {
           override fun run() {
-            negativeButton.text = getString(R.string.undo_changes, "${countdown}s")
+            if (isAdded) negativeButton.text = getString(R.string.undo_changes, "${countdown}s")
 
             if (countdown <= 0) {
-              if (dialog.isShowing) negativeButton.text =
+              resetResolution()
+              if (isAdded && dialog.isShowing) negativeButton.text =
                 getString(R.string.undo_changes, getString(R.string.undone))
-                return
+              return
             }
             countdown--
             handler.postDelayed(this, 1000)
           }
-        })
+        }
+        
+        Handler(Looper.getMainLooper()).post(runnable)
+        
+        dialog.setOnDismissListener {
+            handler.removeCallbacks(runnable)
+        }
     }
     
     fun resetResolution() {
-        val service = asInterface("android.view.IWindowManager", "window")
-        HiddenApiBypass.invoke(service::class.java, service,
+        HiddenApiBypass.invoke(iWindowManager::class.java, iWindowManager,
           "clearForcedDisplaySize", Display.DEFAULT_DISPLAY)
     }
 
