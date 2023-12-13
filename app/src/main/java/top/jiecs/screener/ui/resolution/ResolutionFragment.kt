@@ -13,10 +13,9 @@ import top.jiecs.screener.R
 import android.content.Context
 import android.view.Display
 import android.view.WindowManager
-import android.os.Handler
 import android.content.DialogInterface
-import java.util.concurrent.Executors
-import java.lang.Runnable
+import android.os.Handler
+import android.os.Looper
 
 import org.lsposed.hiddenapibypass.HiddenApiBypass
 import rikka.shizuku.ShizukuBinderWrapper
@@ -74,6 +73,13 @@ class ResolutionFragment : Fragment() {
         return root
     }
     
+    private fun asInterface(className: String, serviceName: String): Any =
+        ShizukuBinderWrapper(SystemServiceHelper.getSystemService(serviceName)).let {
+            Class.forName("$className\$Stub").run {
+                HiddenApiBypass.invoke(this, null, "asInterface", it)
+            }
+        }
+    
     fun applyResolution(height: Int, width: Int, dpi: Int) {
         Log.d("screener", "apply")
         //val displayManager: DisplayManager = context.getSystemService(Context.DISPLAY_SERVICE)
@@ -92,45 +98,33 @@ class ResolutionFragment : Fragment() {
           .setNegativeButton(getString(R.string.undo_changes)) { _, _ ->
                resetResolution()
           }
+          .setCancelable(false)
           .show()
           
         val negativeButton = dialog.getButton(DialogInterface.BUTTON_NEGATIVE)
         var countdown = 10
         val handler = Handler()
-        val runnable = object : Runnable {
+        
+        Handler(Looper.getMainLooper())
+          .post(object : Runnable {
           override fun run() {
-            negativeButton.text = "${getString(R.string.undo_changes)} ($countdown s)"
+            negativeButton.text = getString(R.string.undo_changes, "${countdown}s")
 
             if (countdown <= 0) {
-              if (dialog.isShowing) negativeButton.performClick()
-              // handler.removeCallbacks(runnable)
+              if (dialog.isShowing) negativeButton.text =
+                getString(R.string.undo_changes, getString(R.string.undone))
+                return
             }
             countdown--
             handler.postDelayed(this, 1000)
           }
-        }
-
-        handler.post(runnable)
-        
-        
-        
+        })
     }
     
-    private fun asInterface(className: String, serviceName: String): Any =
-        ShizukuBinderWrapper(SystemServiceHelper.getSystemService(serviceName)).let {
-            Class.forName("$className\$Stub").run {
-                HiddenApiBypass.invoke(this, null, "asInterface", it)
-            }
-        }
-        
     fun resetResolution() {
         val service = asInterface("android.view.IWindowManager", "window")
-        //val service = WindowManagerGlobal.getWindowManagerService()
         HiddenApiBypass.invoke(service::class.java, service,
           "clearForcedDisplaySize", Display.DEFAULT_DISPLAY)
-        //val service = IWindowManager.Stub.asInterface(ServiceManager.getService(Context.WINDOW_SERVICE));
-        
-        //service.clearForcedDisplaySize(Display.DEFAULT_DISPLAY);
     }
 
     override fun onDestroyView() {
