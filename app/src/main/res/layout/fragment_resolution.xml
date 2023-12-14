@@ -10,17 +10,15 @@
     <TextView
          android:layout_height="wrap_content"
          android:layout_width="match_parent"
-         android:layout_marginEnd="8dp"
-         app:layout_constraintTop_toTopOf="parent"
-         app:layout_constraintStart_toStartOf="parent"
+         android:layout_marginEnd="18dp"
          android:textSize="20sp"
          android:layout_marginTop="8dp"
-         android:layout_marginStart="8dp"
+         android:layout_marginStart="18dp"
          android:id="@+id/text_resolution" />
 
     <com.google.android.material.textfield.TextInputLayout
          android:layout_height="wrap_content"
-         android:layout_width="match_parent"
+         android:layout_width="0dp"
          android:hint="@string/height"
          app:layout_constraintStart_toStartOf="@+id/text_resolution"
          app:layout_constraintEnd_toEndOf="@+id/text_resolution"
@@ -37,10 +35,11 @@
 
     <com.google.android.material.textfield.TextInputLayout
          android:layout_height="wrap_content"
-         android:layout_width="match_parent"
-         android:layout_marginEnd="8dp"
+         android:layout_width="0dp"
          android:hint="@string/width"
-         android:layout_marginStart="8dp"
+         app:layout_constraintStart_toStartOf="@+id/text_resolution"
+         app:layout_constraintEnd_toEndOf="@+id/text_resolution"
+         android:layout_marginTop="8dp"
          app:layout_constraintTop_toBottomOf="@+id/text_height"
          android:id="@+id/text_width">
 
@@ -53,10 +52,11 @@
 
     <com.google.android.material.textfield.TextInputLayout
          android:layout_height="wrap_content"
-         android:layout_width="match_parent"
-         android:layout_marginEnd="8dp"
+         android:layout_width="0dp"
          android:hint="@string/dpi"
-         android:layout_marginStart="8dp"
+         app:layout_constraintStart_toStartOf="@+id/text_resolution"
+         app:layout_constraintEnd_toEndOf="@+id/text_resolution"
+         android:layout_marginTop="8dp"
          app:layout_constraintTop_toBottomOf="@+id/text_width"
          android:id="@+id/text_dpi">
 
@@ -67,38 +67,45 @@
 
     </com.google.android.material.textfield.TextInputLayout>
 
+    <TextView
+         android:layout_height="wrap_content"
+         android:layout_width="0dp"
+         app:layout_constraintTop_toBottomOf="@+id/text_dpi"
+         app:layout_constraintBottom_toTopOf="@+id/bt_apply"
+         app:layout_constraintStart_toStartOf="@+id/text_resolution"
+         android:id="@+id/text_scale"
+         android:text="@string/scale" />
+
     <com.google.android.material.slider.Slider
          android:layout_height="wrap_content"
-         android:layout_width="match_parent"
-         android:layout_marginEnd="8dp"
+         android:layout_width="0dp"
+         app:layout_constraintTop_toTopOf="@+id/text_scale"
+         app:layout_constraintBottom_toBottomOf="@+id/text_scale"
+         app:layout_constraintStart_toEndOf="@+id/text_scale"
+         app:layout_constraintEnd_toEndOf="@+id/text_resolution"
          android:valueTo="200"
          android:value="0"
          android:valueFrom="-50"
          android:layout_marginTop="8dp"
-         android:layout_marginStart="8dp"
          android:stepSize="25"
-         app:layout_constraintTop_toBottomOf="@+id/text_dpi"
          android:id="@+id/silder_scale" />
 
     <Button
          android:layout_height="wrap_content"
          android:layout_width="wrap_content"
-         android:layout_marginEnd="8dp"
-         android:layout_marginTop="8dp"
-         android:layout_marginStart="8dp"
+         app:layout_constraintStart_toStartOf="@+id/text_resolution"
+         android:layout_marginTop="4dp"
          app:layout_constraintTop_toBottomOf="@+id/silder_scale"
          android:id="@+id/bt_apply"
          android:text="@string/apply" />
-    
+
     <Button
          android:layout_height="wrap_content"
          android:layout_width="wrap_content"
-         android:layout_marginEnd="8dp"
-         android:layout_marginTop="8dp"
-         android:layout_marginStart="8dp"
-         app:layout_constraintTop_toBottomOf="@+id/silder_scale"
+         app:layout_constraintTop_toTopOf="@+id/bt_apply"
          app:layout_constraintStart_toEndOf="@+id/bt_apply"
          style="?attr/materialButtonOutlinedStyle"
+         android:layout_marginStart="8dp"
          android:id="@+id/bt_reset"
          android:text="@string/reset" />
 

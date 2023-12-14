@@ -85,6 +85,7 @@ class ResolutionFragment : Fragment() {
     
     fun applyResolution(height: Int, width: Int, dpi: Int) {
         Log.d("screener", "apply")
+        // TODO: apply dpi for each user
         
         HiddenApiBypass.invoke(iWindowManager::class.java, iWindowManager,
           "setForcedDisplaySize", Display.DEFAULT_DISPLAY, width, height)

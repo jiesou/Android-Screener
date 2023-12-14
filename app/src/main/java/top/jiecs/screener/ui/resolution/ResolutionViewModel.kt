@@ -11,7 +11,7 @@ import android.view.WindowManager
 class ResolutionViewModel : ViewModel() {
 
     private val _text = MutableLiveData<String>().apply {
-        value = "This is resolution Fragment"
+        value = "Physical Resolution Override"
     }
     val text: LiveData<String> = _text
     
@@ -20,7 +20,8 @@ class ResolutionViewModel : ViewModel() {
 
     fun fetchScreenResolution(windowManager: WindowManager) { 
         val metrics = windowManager.currentWindowMetrics.bounds
-
+        
+        // TODO: get now Physical and Override size
         _resolutionMap.value = mapOf(
           "height" to metrics.height(),
           "width" to metrics.width(),

@@ -8,7 +8,7 @@
 	<string name="height">Height</string>
 	<string name="width">Width</string>
     <string name="dpi">DPI</string>
-    <string name="auto_dpi"></string>
+    <string name="scale">Scale</string>
 	<string name="apply">Apply</string>
     <string name="reset">Reset</string>
     <string name="success">Success</string>
