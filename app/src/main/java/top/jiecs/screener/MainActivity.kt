@@ -37,7 +37,7 @@ class MainActivity : AppCompatActivity() {
         )
         setupActionBarWithNavController(navController, appBarConfiguration)
         binding.navView.setupWithNavController(navController)
-		val test = R.string.success
+		
 		Shizuku.addRequestPermissionResultListener(REQUEST_PERMISSION_RESULT_LISTENER)
     }
 
