@@ -33,8 +33,11 @@ class ResolutionFragment : Fragment() {
     private val binding get() = _binding!!
     
     private lateinit var windowManager: WindowManager
-    
-    private lateinit var iWindowManager: Any
+
+    companion object {
+        lateinit var iWindowManager: Any
+     lateinit var iUserManager: Any
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -49,7 +52,9 @@ class ResolutionFragment : Fragment() {
         
         windowManager = requireActivity().windowManager
         iWindowManager = asInterface("android.view.IWindowManager", "window")
+        iUserManager = asInterface("android.os.IUserManager", "user")
         resolutionViewModel.fetchScreenResolution(windowManager)
+        resolutionViewModel.fetchUsers()
         
         val textHeight = binding.textHeight.editText!!
         val textWidth = binding.textWidth.editText!!

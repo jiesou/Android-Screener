@@ -3,5 +3,17 @@
     <string name="resolution">分辨率</string>
     <string name="frame_rate">刷新率</string>
     <string name="settings">设置</string>
-
+    <string name="shizuku_not_available">Shizuku 不可用</string>
+	<string name="height">高</string>
+	<string name="width">宽</string>
+    <string name="dpi">DPI</string>
+    <string name="scale">缩放</string>
+	<string name="apply">应用</string>
+    <string name="reset">重置</string>
+    <string name="success">成功</string>
+    <string name="reset_hint">如果要撤销更改，请等待 10 秒来恢复</string>
+    <string name="looks_fine">看着不错</string>
+	<string name="undo_changes">撤销更改（%1$s）</string>
+    <string name="undone">已撤销</string>
+    
 </resources>
