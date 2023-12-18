@@ -13,7 +13,6 @@ import android.util.Log
 import java.lang.reflect.Method
 import java.lang.reflect.Field
 
-
 import org.lsposed.hiddenapibypass.HiddenApiBypass
 import top.jiecs.screener.ui.resolution.ResolutionFragment
 
@@ -24,22 +23,23 @@ class ResolutionViewModel : ViewModel() {
     }
     val text: LiveData<String> = _text
     
-    private val _resolutionMap = MutableLiveData<Map<String, Int>>()
-    val resolutionMap: LiveData<Map<String, Int>> = _resolutionMap
-
+    
+    val resolutionMap: MutableLiveData<Map<String, Int>> by lazy {
+        MutableLiveData<Map<String, Int>>()
+    }
     fun fetchScreenResolution(windowManager: WindowManager) { 
         val metrics = windowManager.currentWindowMetrics.bounds
         
         // TODO: get now Physical and Override size
-        _resolutionMap.value = mapOf(
+        resolutionMap.value = mapOf(
           "height" to metrics.height(),
           "width" to metrics.width(),
           "dpi" to 520)
     }
     
-    private val _usersList = MutableLiveData<MutableList<*>>()
-    val usersList: LiveData<MutableList<*>> = _usersList
-
+    val usersList: MutableLiveData<Map<String, Any>> by lazy {
+        MutableLiveData<Map<String, Any>>()
+    }
     fun fetchUsers() { 
         val userManager = ResolutionFragment.iUserManager
         
@@ -60,6 +60,15 @@ class ResolutionViewModel : ViewModel() {
        // }
         
        // TODO
+       
+       usersList.setValue(mapOf(
+           "id" to 0,
+           "name" to "jiesou"
+      ))
+      usersList.setValue(mapOf(
+           "id" to 10,
+           "name" to "second user"
+      ))
     }
     
 }

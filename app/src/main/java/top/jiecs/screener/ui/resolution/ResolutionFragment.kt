@@ -5,6 +5,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
+import com.google.android.material.chip.Chip
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import top.jiecs.screener.databinding.FragmentResolutionBinding
@@ -64,7 +65,15 @@ class ResolutionFragment : Fragment() {
             textWidth.setText(it["width"].toString())
             textDpi.setText(it["dpi"].toString())
         }
-        
+        val chipGroup = binding.chipGroup
+        resolutionViewModel.usersList.observe(viewLifecycleOwner) {
+            Log.d("usersRecved", it.toString())
+            chipGroup.addView(Chip(chipGroup.context).apply {
+                text = "${it["name"]} (${it["id"]})"
+                isCheckable = true
+                isCheckedIconVisible = true
+            })
+        }
         val textView = binding.textResolution
         resolutionViewModel.text.observe(viewLifecycleOwner) {
             textView.text = it
@@ -90,10 +99,15 @@ class ResolutionFragment : Fragment() {
     
     fun applyResolution(height: Int, width: Int, dpi: Int) {
         Log.d("screener", "apply")
-        // TODO: apply dpi for each user
         
         HiddenApiBypass.invoke(iWindowManager::class.java, iWindowManager,
           "setForcedDisplaySize", Display.DEFAULT_DISPLAY, width, height)
+        
+        // TODO: apply dpi for each user
+        val userId = 0
+        HiddenApiBypass.invoke(iWindowManager::class.java, iWindowManager,
+          "setForcedDisplayDensityForUser", Display.DEFAULT_DISPLAY, dpi, userId)
+        
         
         val dialog = MaterialAlertDialogBuilder(requireContext())
           .setTitle(getString(R.string.success))
