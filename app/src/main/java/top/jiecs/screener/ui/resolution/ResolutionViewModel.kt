@@ -37,8 +37,8 @@ class ResolutionViewModel : ViewModel() {
           "dpi" to 520)
     }
     
-    val usersList: MutableLiveData<Map<String, Any>> by lazy {
-        MutableLiveData<Map<String, Any>>()
+    val usersList: MutableLiveData<List<Map<String, Any>>> by lazy {
+        MutableLiveData<List<Map<String, Any>>>()
     }
     fun fetchUsers() { 
         val userManager = ResolutionFragment.iUserManager
@@ -61,14 +61,15 @@ class ResolutionViewModel : ViewModel() {
         
        // TODO
        
-       usersList.setValue(mapOf(
-           "id" to 0,
-           "name" to "jiesou"
-      ))
-      usersList.setValue(mapOf(
-           "id" to 10,
-           "name" to "second user"
-      ))
+        usersList.setValue(
+          listOf(mapOf(
+             "id" to 0,
+             "name" to "jiesou"
+          ), mapOf(
+             "id" to 10,
+             "name" to "second user")
+          )
+        )
     }
     
 }

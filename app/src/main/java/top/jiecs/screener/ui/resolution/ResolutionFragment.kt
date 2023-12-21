@@ -35,9 +35,11 @@ class ResolutionFragment : Fragment() {
     
     private lateinit var windowManager: WindowManager
 
+    private var userId = 0
+
     companion object {
         lateinit var iWindowManager: Any
-     lateinit var iUserManager: Any
+        lateinit var iUserManager: Any
     }
 
     override fun onCreateView(
@@ -57,6 +59,10 @@ class ResolutionFragment : Fragment() {
         resolutionViewModel.fetchScreenResolution(windowManager)
         resolutionViewModel.fetchUsers()
         
+        val textView = binding.textResolution
+        resolutionViewModel.text.observe(viewLifecycleOwner) {
+            textView.text = it
+        }
         val textHeight = binding.textHeight.editText!!
         val textWidth = binding.textWidth.editText!!
         val textDpi = binding.textDpi.editText!!
@@ -68,17 +74,20 @@ class ResolutionFragment : Fragment() {
         val chipGroup = binding.chipGroup
         resolutionViewModel.usersList.observe(viewLifecycleOwner) {
             Log.d("usersRecved", it.toString())
-            chipGroup.addView(Chip(chipGroup.context).apply {
-                text = "${it["name"]} (${it["id"]})"
-                isCheckable = true
-                isCheckedIconVisible = true
-            })
-        }
-        val textView = binding.textResolution
-        resolutionViewModel.text.observe(viewLifecycleOwner) {
-            textView.text = it
+            for (user in it) {
+                chipGroup.addView(Chip(chipGroup.context).apply {
+                    text = "${user["name"]} (${user["id"]})"
+                    isCheckable = true
+                    isCheckedIconVisible = true
+                })
+            }
         }
         
+        chipGroup.setOnCheckedChangeListener { group, index ->
+            Log.d("index", index.toString())
+            val currentUser = resolutionViewModel.usersList.value!![index] as Map<String, Any>
+            userId = currentUser["id"] as Int
+        }
         binding.btApply.setOnClickListener {
             applyResolution(textHeight.text.toString().toInt(),
               textWidth.text.toString().toInt(),
@@ -104,7 +113,6 @@ class ResolutionFragment : Fragment() {
           "setForcedDisplaySize", Display.DEFAULT_DISPLAY, width, height)
         
         // TODO: apply dpi for each user
-        val userId = 0
         HiddenApiBypass.invoke(iWindowManager::class.java, iWindowManager,
           "setForcedDisplayDensityForUser", Display.DEFAULT_DISPLAY, dpi, userId)
         
