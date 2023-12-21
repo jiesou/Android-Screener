@@ -74,19 +74,28 @@ class ResolutionFragment : Fragment() {
         val chipGroup = binding.chipGroup
         resolutionViewModel.usersList.observe(viewLifecycleOwner) {
             Log.d("usersRecved", it.toString())
+            chipGroup.removeAllViews()
             for (user in it) {
                 chipGroup.addView(Chip(chipGroup.context).apply {
                     text = "${user["name"]} (${user["id"]})"
                     isCheckable = true
-                    isCheckedIconVisible = true
+                    //isCheckedIconVisible = true
                 })
             }
+            // set default
+            val firstChip = chipGroup.getChildAt(0) as Chip
+            firstChip.isChecked = true
         }
         
-        chipGroup.setOnCheckedChangeListener { group, index ->
-            Log.d("index", index.toString())
-            val currentUser = resolutionViewModel.usersList.value!![index] as Map<String, Any>
-            userId = currentUser["id"] as Int
+        
+        chipGroup.setOnCheckedStateChangeListener { _, checkedIds ->
+            Log.d("index", checkedIds.toString())
+            val index = checkedIds[0] - 1
+            val users = resolutionViewModel.usersList.value!!
+            if (index < users.size) {
+              val currentUser = users[index]
+              userId = currentUser["id"] as Int
+            }
         }
         binding.btApply.setOnClickListener {
             applyResolution(textHeight.text.toString().toInt(),
