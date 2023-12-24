@@ -90,12 +90,12 @@ class ResolutionFragment : Fragment() {
         
         chipGroup.setOnCheckedStateChangeListener { _, checkedIds ->
             Log.d("index", checkedIds.toString())
+            if (checkedIds.isEmpty()) return@setOnCheckedStateChangeListener
             val index = checkedIds[0] - 1
             val users = resolutionViewModel.usersList.value!!
-            if (index < users.size) {
-              val currentUser = users[index]
-              userId = currentUser["id"] as Int
-            }
+            if (index >= users.size) return@setOnCheckedStateChangeListener
+            val currentUser = users[index]
+            userId = currentUser["id"] as Int
         }
         binding.btApply.setOnClickListener {
             applyResolution(textHeight.text.toString().toInt(),
@@ -164,6 +164,8 @@ class ResolutionFragment : Fragment() {
     fun resetResolution() {
         HiddenApiBypass.invoke(iWindowManager::class.java, iWindowManager,
           "clearForcedDisplaySize", Display.DEFAULT_DISPLAY)
+        HiddenApiBypass.invoke(iWindowManager::class.java, iWindowManager,
+          "clearForcedDisplayDensityForUser", Display.DEFAULT_DISPLAY, userId)
     }
 
     override fun onDestroyView() {
