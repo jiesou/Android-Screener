@@ -33,8 +33,6 @@ class ResolutionFragment : Fragment() {
     // onDestroyView.
     private val binding get() = _binding!!
     
-    private lateinit var windowManager: WindowManager
-
     private var userId = 0
 
     companion object {
@@ -53,14 +51,13 @@ class ResolutionFragment : Fragment() {
         _binding = FragmentResolutionBinding.inflate(inflater, container, false)
         val root: View = binding.root
         
-        windowManager = requireActivity().windowManager
         iWindowManager = asInterface("android.view.IWindowManager", "window")
         iUserManager = asInterface("android.os.IUserManager", "user")
-        resolutionViewModel.fetchScreenResolution(windowManager)
+        resolutionViewModel.fetchScreenResolution()
         resolutionViewModel.fetchUsers()
         
         val textView = binding.textResolution
-        resolutionViewModel.text.observe(viewLifecycleOwner) {
+        resolutionViewModel.screenInfoText.observe(viewLifecycleOwner) {
             textView.text = it
         }
         val textHeight = binding.textHeight.editText!!

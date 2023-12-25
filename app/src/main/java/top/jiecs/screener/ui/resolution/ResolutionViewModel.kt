@@ -12,53 +12,59 @@ import android.view.WindowManager
 import android.util.Log
 import java.lang.reflect.Method
 import java.lang.reflect.Field
+import android.graphics.Point
 
 import org.lsposed.hiddenapibypass.HiddenApiBypass
 import top.jiecs.screener.ui.resolution.ResolutionFragment
 
 class ResolutionViewModel : ViewModel() {
 
-    private val _text = MutableLiveData<String>().apply {
-        value = "Physical Resolution Override"
+    val screenInfoText: MutableLiveData<String> by lazy {
+        MutableLiveData<String>()
     }
-    val text: LiveData<String> = _text
-    
-    
     val resolutionMap: MutableLiveData<Map<String, Int>> by lazy {
         MutableLiveData<Map<String, Int>>()
     }
-    fun fetchScreenResolution(windowManager: WindowManager) { 
-        val metrics = windowManager.currentWindowMetrics.bounds
-        
-        // TODO: get now Physical and Override size
+    fun fetchScreenResolution() { 
+        val windowManager = ResolutionFragment.iWindowManager
+
+        val physical_size = Point()
+        HiddenApiBypass.invoke(windowManager::class.java, windowManager, "getInitialDisplaySize", Display.DEFAULT_DISPLAY, physical_size)
+        val physical_dpi = HiddenApiBypass.invoke(windowManager::class.java, windowManager, "getInitialDisplayDensity", Display.DEFAULT_DISPLAY) as Int 
+        screenInfoText.value = "Physical ${physical_size.y}x${physical_size.x}; DPI ${physical_dpi.toString()}"
+
+        val override_size = Point()
+        HiddenApiBypass.invoke(windowManager::class.java, windowManager, "getBaseDisplaySize", Display.DEFAULT_DISPLAY, override_size)
+        val override_dpi = HiddenApiBypass.invoke(windowManager::class.java, windowManager, "getBaseDisplayDensity", Display.DEFAULT_DISPLAY) as Int
         resolutionMap.value = mapOf(
-          "height" to metrics.height(),
-          "width" to metrics.width(),
-          "dpi" to 520)
+          "height" to override_size.y,
+          "width" to override_size.x,
+          "dpi" to override_dpi.toString())
     }
     
     val usersList: MutableLiveData<List<Map<String, Any>>> by lazy {
         MutableLiveData<List<Map<String, Any>>>()
     }
-    fun fetchUsers() { 
+    fun fetchUsers() {
         val userManager = ResolutionFragment.iUserManager
-        
-        val users = HiddenApiBypass.invoke(userManager::class.java, userManager, "getUsers", true, true, true) as List<*>
-        Log.d("users", users.toString())
-        
-        val userInfoFields = HiddenApiBypass.getInstanceFields(Class.forName("android.content.pm.UserInfo")) as List<Field>
+        try {
+            val users = HiddenApiBypass.invoke(userManager::class.java, userManager, "getUsers", true, true, true) as List<*>
+            val userInfoFields = HiddenApiBypass.getInstanceFields(Class.forName("android.content.pm.UserInfo")) as List<Field>
 
-        val idField = userInfoFields.first { it.name == "id" }
-        val nameField = userInfoFields.first { it.name == "name" }
-        
-        val mappedUsers = users.map { userInfo ->
-            mapOf(
-                "id" to idField.get(userInfo)!!,
-                "name" to nameField.get(userInfo)!!
-            )
-        }
+            val idField = userInfoFields.first { it.name == "id" }
+            val nameField = userInfoFields.first { it.name == "name" }
+            
+            val mappedUsers = users.map { userInfo ->
+                mapOf(
+                    "id" to idField.get(userInfo)!!,
+                    "name" to nameField.get(userInfo)!!
+                )
+            }
        
-        usersList.value = mappedUsers
+            usersList.value = mappedUsers
+        } catch (e: Exception) {
+            Log.e("fetchUsers", e.message, e)
+        }
     }
     
 }
