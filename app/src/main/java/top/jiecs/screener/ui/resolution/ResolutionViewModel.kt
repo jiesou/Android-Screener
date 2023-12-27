@@ -19,27 +19,30 @@ import top.jiecs.screener.ui.resolution.ResolutionFragment
 
 class ResolutionViewModel : ViewModel() {
 
-    val screenInfoText: MutableLiveData<String> by lazy {
-        MutableLiveData<String>()
+    val physicalResolutionMap: MutableLiveData<Map<String, Float>> by lazy {
+        MutableLiveData<Map<String, Float>>()
     }
-    val resolutionMap: MutableLiveData<Map<String, Int>> by lazy {
-        MutableLiveData<Map<String, Int>>()
+    val resolutionMap: MutableLiveData<Map<String, Float>> by lazy {
+        MutableLiveData<Map<String, Float>>()
     }
     fun fetchScreenResolution() { 
         val windowManager = ResolutionFragment.iWindowManager
 
         val physical_size = Point()
         HiddenApiBypass.invoke(windowManager::class.java, windowManager, "getInitialDisplaySize", Display.DEFAULT_DISPLAY, physical_size)
-        val physical_dpi = HiddenApiBypass.invoke(windowManager::class.java, windowManager, "getInitialDisplayDensity", Display.DEFAULT_DISPLAY) as Int 
-        screenInfoText.value = "Physical ${physical_size.y}x${physical_size.x}; DPI ${physical_dpi.toString()}"
-
+        val physical_dpi = HiddenApiBypass.invoke(windowManager::class.java, windowManager, "getInitialDisplayDensity", Display.DEFAULT_DISPLAY) as Int
+        physicalResolutionMap.value = mapOf(
+          "height" to physical_size.y.toFloat(),
+          "width" to physical_size.x.toFloat(),
+          "dpi" to physical_dpi.toFloat())
+        
         val override_size = Point()
         HiddenApiBypass.invoke(windowManager::class.java, windowManager, "getBaseDisplaySize", Display.DEFAULT_DISPLAY, override_size)
         val override_dpi = HiddenApiBypass.invoke(windowManager::class.java, windowManager, "getBaseDisplayDensity", Display.DEFAULT_DISPLAY) as Int
         resolutionMap.value = mapOf(
-          "height" to override_size.y,
-          "width" to override_size.x,
-          "dpi" to override_dpi.toString())
+          "height" to override_size.y.toFloat(),
+          "width" to override_size.x.toFloat(),
+          "dpi" to override_dpi.toFloat())
     }
     
     val usersList: MutableLiveData<List<Map<String, Any>>> by lazy {

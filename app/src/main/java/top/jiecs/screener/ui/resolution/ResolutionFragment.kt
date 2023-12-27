@@ -17,6 +17,9 @@ import android.view.WindowManager
 import android.content.DialogInterface
 import android.os.Handler
 import android.os.Looper
+import kotlin.math.pow
+import kotlin.math.sqrt
+import kotlin.math.roundToInt
 
 import org.lsposed.hiddenapibypass.HiddenApiBypass
 import rikka.shizuku.ShizukuBinderWrapper
@@ -56,9 +59,8 @@ class ResolutionFragment : Fragment() {
         resolutionViewModel.fetchScreenResolution()
         resolutionViewModel.fetchUsers()
         
-        val textView = binding.textResolution
-        resolutionViewModel.screenInfoText.observe(viewLifecycleOwner) {
-            textView.text = it
+        resolutionViewModel.physicalResolutionMap.observe(viewLifecycleOwner) {
+            binding.textResolution.text = "Physical ${it["height"].toString()}x${it["width"].toString()}; DPI ${it["dpi"].toString()}"
         }
         val textHeight = binding.textHeight.editText!!
         val textWidth = binding.textWidth.editText!!
@@ -93,6 +95,26 @@ class ResolutionFragment : Fragment() {
             if (index >= users.size) return@setOnCheckedStateChangeListener
             val currentUser = users[index]
             userId = currentUser["id"] as Int
+        }
+        binding.silderScale.addOnChangeListener { _, value, _ ->
+            // 0 -> 1; 25 -> 1.25
+            val scale_ratio = value * 0.01 + 1
+            val base_height = textHeight.text.toString().toFloat()
+            val base_width = textWidth.text.toString().toFloat()
+            val physical = resolutionViewModel.physicalResolutionMap.value ?: return@addOnChangeListener
+            
+            // calculate the DPI that keeps the display size proportionally scaled
+            // get the ratio of virtual to physical resolution diagonal (pythagorean theorem)
+            // base_physical_ratio = √(h²+w²/ph²+pw²)
+            val base_physical_ratio = sqrt((base_height.pow(2) + base_width.pow(2)) /
+                (physical["height"]!!.pow(2) + physical["width"]!!.pow(2)))
+            
+            // scaled_dpi = pdpi * base_physical_ratio * scale_ratio
+            val scaled_dpi = (physical["dpi"]!! * base_physical_ratio * scale_ratio).roundToInt()
+            
+            Log.d("scaled_dpi", scaled_dpi.toString())
+            
+            binding.textDpi.editText!!.setText(scaled_dpi.toString())
         }
         binding.btApply.setOnClickListener {
             applyResolution(textHeight.text.toString().toInt(),
