@@ -80,14 +80,14 @@
          android:layout_height="wrap_content"
          android:layout_width="0dp"
          app:layout_constraintTop_toTopOf="@+id/text_scale"
-         android:valueTo="200"
          app:layout_constraintStart_toEndOf="@+id/text_scale"
          app:layout_constraintEnd_toEndOf="@+id/text_resolution"
          android:value="0"
-         android:valueFrom="-50"
+         android:valueFrom="-30"
+         android:valueTo="150"
          app:layout_constraintBottom_toBottomOf="@+id/text_scale"
          android:layout_marginTop="8dp"
-         android:stepSize="25"
+         android:stepSize="5"
          android:id="@+id/silder_scale" />
 
     <com.google.android.material.chip.ChipGroup

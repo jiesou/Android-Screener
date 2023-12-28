@@ -66,9 +66,9 @@ class ResolutionFragment : Fragment() {
         val textWidth = binding.textWidth.editText!!
         val textDpi = binding.textDpi.editText!!
         resolutionViewModel.resolutionMap.observe(viewLifecycleOwner) {
-            textHeight.setText(it["height"].toString())
-            textWidth.setText(it["width"].toString())
-            textDpi.setText(it["dpi"].toString())
+            textHeight.setText(it["height"]?.toInt().toString())
+            textWidth.setText(it["width"]?.toInt().toString())
+            textDpi.setText(it["dpi"]?.toInt().toString())
         }
         val chipGroup = binding.chipGroup
         resolutionViewModel.usersList.observe(viewLifecycleOwner) {
@@ -99,8 +99,8 @@ class ResolutionFragment : Fragment() {
         binding.silderScale.addOnChangeListener { _, value, _ ->
             // 0 -> 1; 25 -> 1.25
             val scale_ratio = value * 0.01 + 1
-            val base_height = textHeight.text.toString().toFloat()
-            val base_width = textWidth.text.toString().toFloat()
+            val base_height = textHeight.text.toString().toFloatOrNull() ?: return@addOnChangeListener
+            val base_width = textWidth.text.toString().toFloatOrNull() ?: return@addOnChangeListener
             val physical = resolutionViewModel.physicalResolutionMap.value ?: return@addOnChangeListener
             
             // calculate the DPI that keeps the display size proportionally scaled
@@ -114,7 +114,7 @@ class ResolutionFragment : Fragment() {
             
             Log.d("scaled_dpi", scaled_dpi.toString())
             
-            binding.textDpi.editText!!.setText(scaled_dpi.toString())
+            if (scaled_dpi != 0) binding.textDpi.editText!!.setText(scaled_dpi.toString())
         }
         binding.btApply.setOnClickListener {
             applyResolution(textHeight.text.toString().toInt(),
