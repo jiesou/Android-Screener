@@ -15,6 +15,9 @@ import android.content.Context
 import android.view.Display
 import android.view.WindowManager
 import android.content.DialogInterface
+import android.text.TextWatcher
+import android.text.Editable
+import java.lang.CharSequence
 import android.os.Handler
 import android.os.Looper
 import kotlin.math.pow
@@ -36,6 +39,8 @@ class ResolutionFragment : Fragment() {
     // onDestroyView.
     private val binding get() = _binding!!
     
+    private lateinit var resolutionViewModel: ResolutionViewModel
+    
     private var userId = 0
 
     companion object {
@@ -48,7 +53,7 @@ class ResolutionFragment : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        val resolutionViewModel =
+        resolutionViewModel =
             ViewModelProvider(this).get(ResolutionViewModel::class.java)
 
         _binding = FragmentResolutionBinding.inflate(inflater, container, false)
@@ -97,25 +102,38 @@ class ResolutionFragment : Fragment() {
             userId = currentUser["id"] as Int
         }
         binding.silderScale.addOnChangeListener { _, value, _ ->
-            // 0 -> 1; 25 -> 1.25
-            val scale_ratio = value * 0.01 + 1
-            val base_height = textHeight.text.toString().toFloatOrNull() ?: return@addOnChangeListener
-            val base_width = textWidth.text.toString().toFloatOrNull() ?: return@addOnChangeListener
-            val physical = resolutionViewModel.physicalResolutionMap.value ?: return@addOnChangeListener
-            
-            // calculate the DPI that keeps the display size proportionally scaled
-            // get the ratio of virtual to physical resolution diagonal (pythagorean theorem)
-            // base_physical_ratio = √(h²+w²/ph²+pw²)
-            val base_physical_ratio = sqrt((base_height.pow(2) + base_width.pow(2)) /
-                (physical["height"]!!.pow(2) + physical["width"]!!.pow(2)))
-            
-            // scaled_dpi = pdpi * base_physical_ratio * scale_ratio
-            val scaled_dpi = (physical["dpi"]!! * base_physical_ratio * scale_ratio).roundToInt()
-            
-            Log.d("scaled_dpi", scaled_dpi.toString())
-            
-            if (scaled_dpi != 0) binding.textDpi.editText!!.setText(scaled_dpi.toString())
+            val scaled_height = textHeight.text.toString().toFloatOrNull() ?: return@addOnChangeListener
+            val scaled_width = textWidth.text.toString().toFloatOrNull() ?: return@addOnChangeListener
+            // -50 -> 0.5 ; 0 -> 1 ; 25 -> 1.25
+            val scale_ratio = (value * 0.01 + 1).toFloat()
+            updateDpiEditorOrScaleSilder(scaled_height, scaled_width, scale_ratio)
         }
+        val hw_text_watcher = object : TextWatcher {
+            override fun beforeTextChanged(s: CharSequence, start: Int, count: Int, after: Int) {
+                Log.d("screener", s.toString())
+                super.beforeTextChanged(s, start, count, after)
+            }
+            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
+            override fun afterTextChanged(s: Editable) {
+                val physical = resolutionViewModel.physicalResolutionMap.value ?: return
+                val aspect_ratio = physical["height"]!! / physical["width"]!!
+                when (s) {
+                    textHeight.text -> {
+                        val equal_ratio_width = s.toString().toInt() / aspect_ratio
+                        textWidth.setText(equal_ratio_width.roundToInt().toString())
+                    }
+                    textWidth.text -> {
+                        val equal_ratio_height = s.toString().toInt() * aspect_ratio
+                        textHeight.setText(equal_ratio_height.roundToInt().toString())
+                    }
+                }
+                val scaled_height = textHeight.text.toString().toFloatOrNull() ?: return
+                val scaled_width = textWidth.text.toString().toFloatOrNull() ?: return
+                updateDpiEditorOrScaleSilder(scaled_height, scaled_width, scale_ratio=null)
+            }
+        }
+        textHeight.addTextChangedListener(hw_text_watcher)
+        textWidth.addTextChangedListener(hw_text_watcher)
         binding.btApply.setOnClickListener {
             applyResolution(textHeight.text.toString().toInt(),
               textWidth.text.toString().toInt(),
@@ -185,6 +203,33 @@ class ResolutionFragment : Fragment() {
           "clearForcedDisplaySize", Display.DEFAULT_DISPLAY)
         HiddenApiBypass.invoke(iWindowManager::class.java, iWindowManager,
           "clearForcedDisplayDensityForUser", Display.DEFAULT_DISPLAY, userId)
+    }
+    
+    fun updateDpiEditorOrScaleSilder(scaled_height: Float, scaled_width: Float, scale_ratio: Float?) {
+        val physical = resolutionViewModel.physicalResolutionMap.value ?: return
+        
+        // Calculate the DPI that keeps the display size proportionally scaled
+        // Get the ratio of virtual to physical resolution diagonal (pythagorean theorem)
+        // physical_adj_ratio = √(h²+w²/ph²+pw²)
+        val physical_adj_ratio = sqrt((scaled_height.pow(2) + scaled_width.pow(2)) /
+            (physical["height"]!!.pow(2) + physical["width"]!!.pow(2)))
+        
+        val base_dpi = physical["dpi"]!! * physical_adj_ratio
+           
+        if (scale_ratio === null) {
+            val scaled_dpi = binding.textDpi.editText!!.text.toString().toInt()
+            // scale_ratio = scaled_dpi / (physical_dpi * physical_adj_ratio)
+            var scale_ratio = scaled_dpi / base_dpi
+            // 0.5 -> -50 ; 1 -> 0 ; 1.25 -> 25
+            scale_ratio = (scale_ratio - 1) * 100
+            // Round to two decimal places
+            // scale_ratio = ((scale_ratio * 100).roundToInt()) / 100
+            binding.silderScale.value = scale_ratio
+        } else {
+            // scaled_dpi = physical_dpi * physical_adj_ratio * scale_ratio
+            val scaled_dpi = (base_dpi * scale_ratio).roundToInt()
+            binding.textDpi.editText!!.setText(scaled_dpi.toString())
+        }
     }
 
     override fun onDestroyView() {
