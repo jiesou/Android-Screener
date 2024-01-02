@@ -6,6 +6,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
 import com.google.android.material.chip.Chip
+import androidx.core.widget.doAfterTextChanged
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import top.jiecs.screener.databinding.FragmentResolutionBinding
@@ -17,7 +18,6 @@ import android.view.WindowManager
 import android.content.DialogInterface
 import android.text.TextWatcher
 import android.text.Editable
-import java.lang.CharSequence
 import android.os.Handler
 import android.os.Looper
 import kotlin.math.pow
@@ -91,7 +91,6 @@ class ResolutionFragment : Fragment() {
             firstChip.isChecked = true
         }
         
-        
         chipGroup.setOnCheckedStateChangeListener { _, checkedIds ->
             Log.d("index", checkedIds.toString())
             if (checkedIds.isEmpty()) return@setOnCheckedStateChangeListener
@@ -104,36 +103,36 @@ class ResolutionFragment : Fragment() {
         binding.silderScale.addOnChangeListener { _, value, _ ->
             val scaled_height = textHeight.text.toString().toFloatOrNull() ?: return@addOnChangeListener
             val scaled_width = textWidth.text.toString().toFloatOrNull() ?: return@addOnChangeListener
-            // -50 -> 0.5 ; 0 -> 1 ; 25 -> 1.25
-            val scale_ratio = (value * 0.01 + 1).toFloat()
-            updateDpiEditorOrScaleSilder(scaled_height, scaled_width, scale_ratio)
+            updateDpiEditorOrScaleSilder(scaled_height, scaled_width, value)
         }
-        val hw_text_watcher = object : TextWatcher {
-            override fun beforeTextChanged(s: CharSequence, start: Int, count: Int, after: Int) {
-                Log.d("screener", s.toString())
-                super.beforeTextChanged(s, start, count, after)
-            }
-            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
-            override fun afterTextChanged(s: Editable) {
-                val physical = resolutionViewModel.physicalResolutionMap.value ?: return
-                val aspect_ratio = physical["height"]!! / physical["width"]!!
-                when (s) {
-                    textHeight.text -> {
-                        val equal_ratio_width = s.toString().toInt() / aspect_ratio
-                        textWidth.setText(equal_ratio_width.roundToInt().toString())
-                    }
-                    textWidth.text -> {
-                        val equal_ratio_height = s.toString().toInt() * aspect_ratio
-                        textHeight.setText(equal_ratio_height.roundToInt().toString())
-                    }
+        textWidth.doAfterTextChanged { s: Editable? ->
+            if (s.isNullOrBlank()) return@doAfterTextChanged
+            val physical = resolutionViewModel.physicalResolutionMap.value ?: return@doAfterTextChanged
+            val aspect_ratio = physical["height"]!! / physical["width"]!!
+
+            when (s.hashCode()) {
+                textHeight.text.hashCode() -> {
+                    val equal_ratio_width = s.toString().toInt() / aspect_ratio
+                    textWidth.setText(equal_ratio_width.roundToInt().toString())
                 }
-                val scaled_height = textHeight.text.toString().toFloatOrNull() ?: return
-                val scaled_width = textWidth.text.toString().toFloatOrNull() ?: return
-                updateDpiEditorOrScaleSilder(scaled_height, scaled_width, scale_ratio=null)
+                textWidth.text.hashCode() -> {
+                    val equal_ratio_height = s.toString().toInt() * aspect_ratio
+                    textHeight.setText(equal_ratio_height.roundToInt().toString())
+                }
             }
+            val scaled_height = textHeight.text.toString().toFloatOrNull() ?: return@doAfterTextChanged
+            val scaled_width = textWidth.text.toString().toFloatOrNull() ?: return@doAfterTextChanged
+            updateDpiEditorOrScaleSilder(scaled_height, scaled_width, binding.silderScale.value)
         }
-        textHeight.addTextChangedListener(hw_text_watcher)
-        textWidth.addTextChangedListener(hw_text_watcher)
+        textDpi.doAfterTextChanged { s: Editable? ->
+            if (s.isNullOrBlank()) return@doAfterTextChanged
+            val physical = resolutionViewModel.physicalResolutionMap.value ?: return@doAfterTextChanged
+            val aspect_ratio = physical["height"]!! / physical["width"]!!
+
+            val scaled_height = textHeight.text.toString().toFloatOrNull() ?: return@doAfterTextChanged
+            val scaled_width = textWidth.text.toString().toFloatOrNull() ?: return@doAfterTextChanged
+            updateDpiEditorOrScaleSilder(scaled_height, scaled_width, scale_value=null)
+        }
         binding.btApply.setOnClickListener {
             applyResolution(textHeight.text.toString().toInt(),
               textWidth.text.toString().toInt(),
@@ -205,7 +204,7 @@ class ResolutionFragment : Fragment() {
           "clearForcedDisplayDensityForUser", Display.DEFAULT_DISPLAY, userId)
     }
     
-    fun updateDpiEditorOrScaleSilder(scaled_height: Float, scaled_width: Float, scale_ratio: Float?) {
+    fun updateDpiEditorOrScaleSilder(scaled_height: Float, scaled_width: Float, scale_value: Float?) {
         val physical = resolutionViewModel.physicalResolutionMap.value ?: return
         
         // Calculate the DPI that keeps the display size proportionally scaled
@@ -215,17 +214,24 @@ class ResolutionFragment : Fragment() {
             (physical["height"]!!.pow(2) + physical["width"]!!.pow(2)))
         
         val base_dpi = physical["dpi"]!! * physical_adj_ratio
-           
-        if (scale_ratio === null) {
-            val scaled_dpi = binding.textDpi.editText!!.text.toString().toInt()
+        if (scale_value === null) {
+            val scaled_dpi = binding.textDpi.editText!!.text.toString().toFloatOrNull() ?: base_dpi
             // scale_ratio = scaled_dpi / (physical_dpi * physical_adj_ratio)
-            var scale_ratio = scaled_dpi / base_dpi
+            val scale_ratio = scaled_dpi / base_dpi
             // 0.5 -> -50 ; 1 -> 0 ; 1.25 -> 25
-            scale_ratio = (scale_ratio - 1) * 100
+            val scale_value = (scale_ratio - 1) * 100
             // Round to two decimal places
             // scale_ratio = ((scale_ratio * 100).roundToInt()) / 100
-            binding.silderScale.value = scale_ratio
+            if (scale_value < -50 || scale_value > 50) {
+                binding.textDpi.error = "over limit"
+                return
+            } else {
+                binding.silderScale.value = ((scale_value / 5).roundToInt() * 5).toFloat()
+                binding.textDpi.error = null
+            }
         } else {
+            // -50 -> 0.5 ; 0 -> 1 ; 25 -> 1.25
+            val scale_ratio = (scale_value * 0.01 + 1).toFloat()
             // scaled_dpi = physical_dpi * physical_adj_ratio * scale_ratio
             val scaled_dpi = (base_dpi * scale_ratio).roundToInt()
             binding.textDpi.editText!!.setText(scaled_dpi.toString())
