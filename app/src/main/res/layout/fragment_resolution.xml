@@ -88,7 +88,7 @@
          app:layout_constraintBottom_toBottomOf="@+id/text_scale"
          android:layout_marginTop="8dp"
          android:stepSize="5"
-         android:id="@+id/silder_scale" />
+         android:id="@+id/slider_scale" />
 
     <com.google.android.material.chip.ChipGroup
          android:layout_height="wrap_content"
@@ -96,7 +96,7 @@
          app:layout_constraintStart_toStartOf="@+id/text_resolution"
          app:layout_constraintEnd_toEndOf="@+id/text_resolution"
          android:layout_marginTop="0dp"
-         app:layout_constraintTop_toBottomOf="@+id/silder_scale"
+         app:layout_constraintTop_toBottomOf="@+id/slider_scale"
          app:singleSelection="true"
          app:selectionRequired="true"
          android:id="@+id/chip_group" />

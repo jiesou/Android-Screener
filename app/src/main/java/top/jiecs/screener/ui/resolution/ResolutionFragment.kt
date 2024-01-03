@@ -42,6 +42,12 @@ class ResolutionFragment : Fragment() {
     private lateinit var resolutionViewModel: ResolutionViewModel
     
     private var userId = 0
+    
+    // determine the most accurate original scale value required by the user
+    // The real-time changing ScaleSlider value will be changed
+    // when scaling cannot be performed at the original value
+    // Apply resolution still according to real-time value
+    private var stuckScaleValue = 0
 
     companion object {
         lateinit var iWindowManager: Any
@@ -83,10 +89,9 @@ class ResolutionFragment : Fragment() {
                 chipGroup.addView(Chip(chipGroup.context).apply {
                     text = "${user["name"]} (${user["id"]})"
                     isCheckable = true
-                    //isCheckedIconVisible = true
                 })
             }
-            // set default
+            // set default checked chip
             val firstChip = chipGroup.getChildAt(0) as Chip
             firstChip.isChecked = true
         }
@@ -100,10 +105,9 @@ class ResolutionFragment : Fragment() {
             val currentUser = users[index]
             userId = currentUser["id"] as Int
         }
-        binding.silderScale.addOnChangeListener { _, value, _ ->
-            val scaled_height = textHeight.text.toString().toFloatOrNull() ?: return@addOnChangeListener
-            val scaled_width = textWidth.text.toString().toFloatOrNull() ?: return@addOnChangeListener
-            updateDpiEditorOrScaleSilder(scaled_height, scaled_width, value)
+        binding.sliderScale.addOnChangeListener { _, value, fromUser ->
+            if (fromUser) stuckScaleValue = value.toInt()
+            updateDpiEditorOrScaleSlider(scale_value=value.toInt())
         }
         textWidth.doAfterTextChanged { s: Editable? ->
             if (s.isNullOrBlank()) return@doAfterTextChanged
@@ -120,18 +124,11 @@ class ResolutionFragment : Fragment() {
                     textHeight.setText(equal_ratio_height.roundToInt().toString())
                 }
             }
-            val scaled_height = textHeight.text.toString().toFloatOrNull() ?: return@doAfterTextChanged
-            val scaled_width = textWidth.text.toString().toFloatOrNull() ?: return@doAfterTextChanged
-            updateDpiEditorOrScaleSilder(scaled_height, scaled_width, binding.silderScale.value)
+            updateDpiEditorOrScaleSlider(scale_value=stuckScaleValue)
         }
         textDpi.doAfterTextChanged { s: Editable? ->
             if (s.isNullOrBlank()) return@doAfterTextChanged
-            val physical = resolutionViewModel.physicalResolutionMap.value ?: return@doAfterTextChanged
-            val aspect_ratio = physical["height"]!! / physical["width"]!!
-
-            val scaled_height = textHeight.text.toString().toFloatOrNull() ?: return@doAfterTextChanged
-            val scaled_width = textWidth.text.toString().toFloatOrNull() ?: return@doAfterTextChanged
-            updateDpiEditorOrScaleSilder(scaled_height, scaled_width, scale_value=null)
+            updateDpiEditorOrScaleSlider(scale_value=null)
         }
         binding.btApply.setOnClickListener {
             applyResolution(textHeight.text.toString().toInt(),
@@ -204,7 +201,9 @@ class ResolutionFragment : Fragment() {
           "clearForcedDisplayDensityForUser", Display.DEFAULT_DISPLAY, userId)
     }
     
-    fun updateDpiEditorOrScaleSilder(scaled_height: Float, scaled_width: Float, scale_value: Float?) {
+    fun updateDpiEditorOrScaleSlider(scale_value: Int?) {
+        val scaled_height = binding.textHeight.editText!!.text.toString().toFloatOrNull() ?: return
+        val scaled_width = binding.textWidth.editText!!.text.toString().toFloatOrNull() ?: return
         val physical = resolutionViewModel.physicalResolutionMap.value ?: return
         
         // Calculate the DPI that keeps the display size proportionally scaled
@@ -226,7 +225,7 @@ class ResolutionFragment : Fragment() {
                 binding.textDpi.error = "over limit"
                 return
             } else {
-                binding.silderScale.value = ((scale_value / 5).roundToInt() * 5).toFloat()
+                binding.sliderScale.value = ((scale_value / 5).roundToInt() * 5).toFloat()
                 binding.textDpi.error = null
             }
         } else {
