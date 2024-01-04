@@ -12,6 +12,7 @@
 	<string name="apply">Apply</string>
     <string name="reset">Reset</string>
     <string name="success">Success</string>
+    <string name="confirmation_dialog">Confirmation Dialog</string>
     <string name="reset_hint">If you wish to undo the changes, wait 10 seconds to resume.</string>
     <string name="looks_fine">Looks Fine</string>
 	<string name="undo_changes">Undo Changes (%1$s)</string>

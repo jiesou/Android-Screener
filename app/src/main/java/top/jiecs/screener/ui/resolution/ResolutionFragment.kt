@@ -6,11 +6,12 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
 import com.google.android.material.chip.Chip
+import androidx.navigation.findNavController
 import androidx.core.widget.doAfterTextChanged
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import top.jiecs.screener.databinding.FragmentResolutionBinding
-
+import top.jiecs.screener.ui.resolution.ConfirmationDialogFragment
 import top.jiecs.screener.R
 import android.content.Context
 import android.view.Display
@@ -28,7 +29,6 @@ import org.lsposed.hiddenapibypass.HiddenApiBypass
 import rikka.shizuku.ShizukuBinderWrapper
 import rikka.shizuku.SystemServiceHelper
 
-import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import android.util.Log
 
 class ResolutionFragment : Fragment() {
@@ -106,8 +106,10 @@ class ResolutionFragment : Fragment() {
             userId = currentUser["id"] as Int
         }
         binding.sliderScale.addOnChangeListener { _, value, fromUser ->
-            if (fromUser) stuckScaleValue = value.toInt()
-            updateDpiEditorOrScaleSlider(scale_value=value.toInt())
+            value.toInt().let {
+                if (fromUser) stuckScaleValue = it
+                updateDpiEditorOrScaleSlider(scale_value=it)
+            }
         }
         textWidth.doAfterTextChanged { s: Editable? ->
             if (s.isNullOrBlank()) return@doAfterTextChanged
@@ -149,49 +151,13 @@ class ResolutionFragment : Fragment() {
         }
     
     fun applyResolution(height: Int, width: Int, dpi: Int) {
-        Log.d("screener", "apply")
-        
         HiddenApiBypass.invoke(iWindowManager::class.java, iWindowManager,
           "setForcedDisplaySize", Display.DEFAULT_DISPLAY, width, height)
-        
-        // TODO: apply dpi for each user
         HiddenApiBypass.invoke(iWindowManager::class.java, iWindowManager,
           "setForcedDisplayDensityForUser", Display.DEFAULT_DISPLAY, dpi, userId)
         
-        
-        val dialog = MaterialAlertDialogBuilder(requireContext())
-          .setTitle(getString(R.string.success))
-          .setMessage(getString(R.string.reset_hint))
-          .setPositiveButton(getString(R.string.looks_fine), null)
-          .setNegativeButton(getString(R.string.undo_changes)) { _, _ ->
-               resetResolution()
-          }
-          .setCancelable(false)
-          .show()
-          
-        val negativeButton = dialog.getButton(DialogInterface.BUTTON_NEGATIVE)
-        var countdown = 10
-        val handler = Handler(Looper.getMainLooper())
-        val runnable = object : Runnable {
-          override fun run() {
-            if (isAdded) negativeButton.text = getString(R.string.undo_changes, "${countdown}s")
-
-            if (countdown <= 0) {
-              resetResolution()
-              if (isAdded && dialog.isShowing) negativeButton.text =
-                getString(R.string.undo_changes, getString(R.string.undone))
-              return
-            }
-            countdown--
-            handler.postDelayed(this, 1000)
-          }
-        }
-        
-        Handler(Looper.getMainLooper()).post(runnable)
-        
-        dialog.setOnDismissListener {
-            handler.removeCallbacks(runnable)
-        }
+        val navController = requireActivity()?.findNavController(R.id.nav_host_fragment_activity_main)
+        navController?.navigate(R.id.navigation_resolution_confirmation)
     }
     
     fun resetResolution() {

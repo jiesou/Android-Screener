@@ -22,4 +22,9 @@
         android:name="top.jiecs.screener.ui.settings.SettingsFragment"
         android:label="@string/settings"
         tools:layout="@layout/fragment_settings" />
+    
+    <dialog
+        android:id="@+id/navigation_resolution_confirmation"
+        android:name="top.jiecs.screener.ui.resolution.ConfirmationDialogFragment"
+        android:label="@string/confirmation_dialog" />
 </navigation>
