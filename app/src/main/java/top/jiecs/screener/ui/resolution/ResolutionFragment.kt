@@ -16,7 +16,6 @@ import top.jiecs.screener.R
 import android.content.Context
 import android.view.Display
 import android.view.WindowManager
-import android.content.DialogInterface
 import android.text.TextWatcher
 import android.text.Editable
 import android.os.Handler
@@ -160,7 +159,7 @@ class ResolutionFragment : Fragment() {
         navController?.navigate(R.id.navigation_resolution_confirmation)
     }
     
-    fun resetResolution() {
+    open fun resetResolution() {
         HiddenApiBypass.invoke(iWindowManager::class.java, iWindowManager,
           "clearForcedDisplaySize", Display.DEFAULT_DISPLAY)
         HiddenApiBypass.invoke(iWindowManager::class.java, iWindowManager,
