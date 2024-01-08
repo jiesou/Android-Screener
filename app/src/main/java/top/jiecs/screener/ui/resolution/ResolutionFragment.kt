@@ -6,27 +6,22 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
 import com.google.android.material.chip.Chip
-import androidx.navigation.findNavController
-import androidx.core.widget.doAfterTextChanged
+
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import top.jiecs.screener.databinding.FragmentResolutionBinding
 import top.jiecs.screener.ui.resolution.ConfirmationDialogFragment
+import top.jiecs.screener.units.ApiCaller
 import top.jiecs.screener.R
+
 import android.content.Context
-import android.view.Display
-import android.view.WindowManager
-import android.text.TextWatcher
 import android.text.Editable
-import android.os.Handler
-import android.os.Looper
+
+import androidx.navigation.findNavController
+import androidx.core.widget.doAfterTextChanged
 import kotlin.math.pow
 import kotlin.math.sqrt
 import kotlin.math.roundToInt
-
-import org.lsposed.hiddenapibypass.HiddenApiBypass
-import rikka.shizuku.ShizukuBinderWrapper
-import rikka.shizuku.SystemServiceHelper
 
 import android.util.Log
 
@@ -40,19 +35,18 @@ class ResolutionFragment : Fragment() {
     
     private lateinit var resolutionViewModel: ResolutionViewModel
     
-    private var userId = 0
+    companion object {
+        lateinit var apiCaller: ApiCaller
+    }
+    
     
     // determine the most accurate original scale value required by the user
     // The real-time changing ScaleSlider value will be changed
     // when scaling cannot be performed at the original value
     // Apply resolution still according to real-time value
     private var stuckScaleValue = 0
-
-    companion object {
-        lateinit var iWindowManager: Any
-        lateinit var iUserManager: Any
-    }
-
+    private var userId = 0
+    
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -64,8 +58,7 @@ class ResolutionFragment : Fragment() {
         _binding = FragmentResolutionBinding.inflate(inflater, container, false)
         val root: View = binding.root
         
-        iWindowManager = asInterface("android.view.IWindowManager", "window")
-        iUserManager = asInterface("android.os.IUserManager", "user")
+        apiCaller = ApiCaller()
         resolutionViewModel.fetchScreenResolution()
         resolutionViewModel.fetchUsers()
         
@@ -132,38 +125,16 @@ class ResolutionFragment : Fragment() {
             updateDpiEditorOrScaleSlider(scale_value=null)
         }
         binding.btApply.setOnClickListener {
-            applyResolution(textHeight.text.toString().toInt(),
+            apiCaller.applyResolution(textHeight.text.toString().toInt(),
               textWidth.text.toString().toInt(),
-              textDpi.text.toString().toInt())
+              textDpi.text.toString().toInt(),
+              userId
+            )
         }
         binding.btReset.setOnClickListener {
-            resetResolution()
+            apiCaller.resetResolution(userId)
         }
         return root
-    }
-    
-    private fun asInterface(className: String, serviceName: String): Any =
-        ShizukuBinderWrapper(SystemServiceHelper.getSystemService(serviceName)).let {
-            Class.forName("$className\$Stub").run {
-                HiddenApiBypass.invoke(this, null, "asInterface", it)
-            }
-        }
-    
-    fun applyResolution(height: Int, width: Int, dpi: Int) {
-        HiddenApiBypass.invoke(iWindowManager::class.java, iWindowManager,
-          "setForcedDisplaySize", Display.DEFAULT_DISPLAY, width, height)
-        HiddenApiBypass.invoke(iWindowManager::class.java, iWindowManager,
-          "setForcedDisplayDensityForUser", Display.DEFAULT_DISPLAY, dpi, userId)
-        
-        val navController = requireActivity()?.findNavController(R.id.nav_host_fragment_activity_main)
-        navController?.navigate(R.id.navigation_resolution_confirmation)
-    }
-    
-    open fun resetResolution() {
-        HiddenApiBypass.invoke(iWindowManager::class.java, iWindowManager,
-          "clearForcedDisplaySize", Display.DEFAULT_DISPLAY)
-        HiddenApiBypass.invoke(iWindowManager::class.java, iWindowManager,
-          "clearForcedDisplayDensityForUser", Display.DEFAULT_DISPLAY, userId)
     }
     
     fun updateDpiEditorOrScaleSlider(scale_value: Int?) {

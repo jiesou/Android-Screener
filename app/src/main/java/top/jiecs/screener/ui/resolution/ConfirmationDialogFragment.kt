@@ -25,7 +25,8 @@ class ConfirmationDialogFragment : DialogFragment() {
             .setMessage(getString(R.string.reset_hint))
             .setPositiveButton(getString(R.string.looks_fine), null)
             .setNegativeButton(getString(R.string.undo_changes)) { _, _ ->
-                 (getTargetFragment() as ResolutionFragment).resetResolution()
+                 val apiCaller = ResolutionFragment.apiCaller
+                 apiCaller.resetResolution(0)
             }
             .setCancelable(false)
             .create()

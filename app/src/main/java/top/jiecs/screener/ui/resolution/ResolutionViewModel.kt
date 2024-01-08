@@ -10,10 +10,10 @@ import android.util.DisplayMetrics
 import android.view.WindowManager
 //import android.content.pm.UserInfo
 import android.util.Log
-import java.lang.reflect.Method
 import java.lang.reflect.Field
 import android.graphics.Point
 
+import top.jiecs.screener.units.ApiCaller
 import org.lsposed.hiddenapibypass.HiddenApiBypass
 import top.jiecs.screener.ui.resolution.ResolutionFragment
 
@@ -26,7 +26,8 @@ class ResolutionViewModel : ViewModel() {
         MutableLiveData<Map<String, Float>>()
     }
     fun fetchScreenResolution() { 
-        val windowManager = ResolutionFragment.iWindowManager
+        val apiCaller = ResolutionFragment.apiCaller as ApiCaller
+        val windowManager = ApiCaller.iWindowManager
 
         val physical_size = Point()
         HiddenApiBypass.invoke(windowManager::class.java, windowManager, "getInitialDisplaySize", Display.DEFAULT_DISPLAY, physical_size)
@@ -49,7 +50,7 @@ class ResolutionViewModel : ViewModel() {
         MutableLiveData<List<Map<String, Any>>>()
     }
     fun fetchUsers() {
-        val userManager = ResolutionFragment.iUserManager
+        val userManager = ApiCaller.iUserManager
         try {
             val users = HiddenApiBypass.invoke(userManager::class.java, userManager, "getUsers", true, true, true) as List<*>
             val userInfoFields = HiddenApiBypass.getInstanceFields(Class.forName("android.content.pm.UserInfo")) as List<Field>
