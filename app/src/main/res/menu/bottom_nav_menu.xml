@@ -2,17 +2,17 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
 
     <item
-        android:id="@+id/navigation_resolution"
+        android:id="@+id/nav_resolution"
         android:icon="@drawable/ic_dashboard_black_24dp"
         android:title="@string/resolution" />
 
     <item
-        android:id="@+id/navigation_frame_rate"
+        android:id="@+id/nav_frame_rate"
         android:icon="@drawable/ic_dashboard_black_24dp"
         android:title="@string/frame_rate" />
 
     <item
-        android:id="@+id/navigation_settings"
+        android:id="@+id/nav_settings"
         android:icon="@drawable/ic_notifications_black_24dp"
         android:title="@string/settings" />
 

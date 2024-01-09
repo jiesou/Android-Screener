@@ -25,8 +25,7 @@ class ResolutionViewModel : ViewModel() {
     val resolutionMap: MutableLiveData<Map<String, Float>> by lazy {
         MutableLiveData<Map<String, Float>>()
     }
-    fun fetchScreenResolution() { 
-        val apiCaller = ResolutionFragment.apiCaller as ApiCaller
+    fun fetchScreenResolution() {
         val windowManager = ApiCaller.iWindowManager
 
         val physical_size = Point()
@@ -53,8 +52,8 @@ class ResolutionViewModel : ViewModel() {
         val userManager = ApiCaller.iUserManager
         try {
             val users = HiddenApiBypass.invoke(userManager::class.java, userManager, "getUsers", true, true, true) as List<*>
-            val userInfoFields = HiddenApiBypass.getInstanceFields(Class.forName("android.content.pm.UserInfo")) as List<Field>
-
+            val userInfoFields = HiddenApiBypass.getInstanceFields(Class.forName("android.content.pm.UserInfo")) as? List<Field> ?: return
+          
             val idField = userInfoFields.first { it.name == "id" }
             val nameField = userInfoFields.first { it.name == "name" }
             

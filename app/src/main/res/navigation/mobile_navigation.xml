@@ -3,28 +3,32 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/mobile_navigation"
-    app:startDestination="@+id/navigation_resolution">
+    app:startDestination="@+id/nav_resolution">
 
     <fragment
-        android:id="@+id/navigation_resolution"
+        android:id="@+id/nav_resolution"
         android:name="top.jiecs.screener.ui.resolution.ResolutionFragment"
         android:label="@string/resolution"
-        tools:layout="@layout/fragment_resolution" />
+        tools:layout="@layout/fragment_resolution">
+        <action
+            android:id="@+id/action_to_nav_resolution_confirmation"
+            app:destination="@id/nav_resolution_confirmation" />
+    </fragment>
+    
+    <dialog
+        android:id="@+id/nav_resolution_confirmation"
+        android:name="top.jiecs.screener.ui.resolution.ConfirmationDialogFragment"
+        android:label="@string/confirmation_dialog" />
 
     <fragment
-        android:id="@+id/navigation_frame_rate"
+        android:id="@+id/nav_frame_rate"
         android:name="top.jiecs.screener.ui.framerate.FrameRateFragment"
         android:label="@string/frame_rate"
         tools:layout="@layout/fragment_frame_rate" />
 
     <fragment
-        android:id="@+id/navigation_settings"
+        android:id="@+id/nav_settings"
         android:name="top.jiecs.screener.ui.settings.SettingsFragment"
         android:label="@string/settings"
         tools:layout="@layout/fragment_settings" />
-    
-    <dialog
-        android:id="@+id/navigation_resolution_confirmation"
-        android:name="top.jiecs.screener.ui.resolution.ConfirmationDialogFragment"
-        android:label="@string/confirmation_dialog" />
 </navigation>

@@ -35,17 +35,14 @@ class ResolutionFragment : Fragment() {
     
     private lateinit var resolutionViewModel: ResolutionViewModel
     
-    companion object {
-        lateinit var apiCaller: ApiCaller
-    }
-    
+    lateinit var apiCaller: ApiCaller
     
     // determine the most accurate original scale value required by the user
     // The real-time changing ScaleSlider value will be changed
     // when scaling cannot be performed at the original value
     // Apply resolution still according to real-time value
     private var stuckScaleValue = 0
-    private var userId = 0
+    var userId = 0
     
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -130,6 +127,8 @@ class ResolutionFragment : Fragment() {
               textDpi.text.toString().toInt(),
               userId
             )
+            val navController = requireView()?.findNavController()
+            navController?.navigate(R.id.action_to_nav_resolution_confirmation)
         }
         binding.btReset.setOnClickListener {
             apiCaller.resetResolution(userId)
@@ -154,14 +153,14 @@ class ResolutionFragment : Fragment() {
             // scale_ratio = scaled_dpi / (physical_dpi * physical_adj_ratio)
             val scale_ratio = scaled_dpi / base_dpi
             // 0.5 -> -50 ; 1 -> 0 ; 1.25 -> 25
-            val scale_value = (scale_ratio - 1) * 100
+            val scaled_value = (scale_ratio - 1) * 100
             // Round to two decimal places
             // scale_ratio = ((scale_ratio * 100).roundToInt()) / 100
-            if (scale_value < -50 || scale_value > 50) {
+            if (scaled_value < -50 || scaled_value > 50) {
                 binding.textDpi.error = "over limit"
                 return
             } else {
-                binding.sliderScale.value = ((scale_value / 5).roundToInt() * 5).toFloat()
+                binding.sliderScale.value = ((scaled_value / 5).roundToInt() * 5).toFloat()
                 binding.textDpi.error = null
             }
         } else {

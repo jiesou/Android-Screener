@@ -24,25 +24,33 @@ class ConfirmationDialogFragment : DialogFragment() {
             .setTitle(getString(R.string.success))
             .setMessage(getString(R.string.reset_hint))
             .setPositiveButton(getString(R.string.looks_fine), null)
-            .setNegativeButton(getString(R.string.undo_changes)) { _, _ ->
-                 val apiCaller = ResolutionFragment.apiCaller
-                 apiCaller.resetResolution(0)
-            }
+            .setNegativeButton(getString(R.string.undo_changes), null)
             .setCancelable(false)
             .create()
     }
     
     override fun onStart() {
         super.onStart()
+        val dialog = dialog as AlertDialog
+        val negativeButton = dialog.getButton(DialogInterface.BUTTON_NEGATIVE) ?: return
+        
         countdownJob = CoroutineScope(Dispatchers.Main).launch {
-            val dialog = dialog as AlertDialog
-            val negativeButton = dialog.getButton(DialogInterface.BUTTON_NEGATIVE)
             for (countdown in 10 downTo 0) {
-                negativeButton?.text = getString(R.string.undo_changes, "${countdown}s")
+                negativeButton.text = getString(R.string.undo_changes, "${countdown}s")
                 delay(1000)
             }
-            if (isAdded && dialog.isShowing) negativeButton?.text =
-                getString(R.string.undo_changes, getString(R.string.undone))
+            if (isAdded && dialog.isShowing) {
+                negativeButton.performClick()
+            }
+        }
+        
+        val resolutionFragment = parentFragmentManager.findFragmentById(R.id.nav_resolution) as? ResolutionFragment
+        val apiCaller = resolutionFragment?.apiCaller
+        negativeButton.setOnClickListener {
+            countdownJob.cancel()
+            apiCaller?.resetResolution(resolutionFragment?.userId!!)
+            negativeButton.text =
+                  getString(R.string.undo_changes, getString(R.string.undone))
         }
     }
 
