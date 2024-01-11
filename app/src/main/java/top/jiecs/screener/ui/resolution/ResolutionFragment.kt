@@ -121,14 +121,17 @@ class ResolutionFragment : Fragment() {
             if (s.isNullOrBlank()) return@doAfterTextChanged
             updateDpiEditorOrScaleSlider(scale_value=null)
         }
-        binding.btApply.setOnClickListener {
-            apiCaller.applyResolution(textHeight.text.toString().toInt(),
+        binding.btApply.setOnClickListener { v: View? ->
+            apiCaller.applyResolution(
+              textHeight.text.toString().toInt(),
               textWidth.text.toString().toInt(),
               textDpi.text.toString().toInt(),
               userId
             )
-            val navController = requireView()?.findNavController()
-            navController?.navigate(R.id.action_to_nav_resolution_confirmation)
+            Log.d("pfm", getParentFragmentManager().toString())
+            Log.d("rf", getParentFragmentManager().findFragmentById(R.id.nav_resolution).toString())
+            val navController = v?.findNavController()
+            navController?.navigate(R.id.nav_resolution_confirmation)
         }
         binding.btReset.setOnClickListener {
             apiCaller.resetResolution(userId)

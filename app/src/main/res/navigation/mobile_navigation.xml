@@ -3,10 +3,9 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/mobile_navigation"
-    app:startDestination="@+id/nav_resolution">
-
+    app:startDestination="@id/nav_resolution">
     <fragment
-        android:id="@+id/nav_resolution"
+        android:id="@id/nav_resolution"
         android:name="top.jiecs.screener.ui.resolution.ResolutionFragment"
         android:label="@string/resolution"
         tools:layout="@layout/fragment_resolution">
@@ -21,13 +20,13 @@
         android:label="@string/confirmation_dialog" />
 
     <fragment
-        android:id="@+id/nav_frame_rate"
+        android:id="@id/nav_frame_rate"
         android:name="top.jiecs.screener.ui.framerate.FrameRateFragment"
         android:label="@string/frame_rate"
         tools:layout="@layout/fragment_frame_rate" />
 
     <fragment
-        android:id="@+id/nav_settings"
+        android:id="@id/nav_settings"
         android:name="top.jiecs.screener.ui.settings.SettingsFragment"
         android:label="@string/settings"
         tools:layout="@layout/fragment_settings" />

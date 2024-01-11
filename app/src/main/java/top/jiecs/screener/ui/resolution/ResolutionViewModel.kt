@@ -13,6 +13,12 @@ import android.util.Log
 import java.lang.reflect.Field
 import android.graphics.Point
 
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
+
 import top.jiecs.screener.units.ApiCaller
 import org.lsposed.hiddenapibypass.HiddenApiBypass
 import top.jiecs.screener.ui.resolution.ResolutionFragment
@@ -52,7 +58,7 @@ class ResolutionViewModel : ViewModel() {
         val userManager = ApiCaller.iUserManager
         try {
             val users = HiddenApiBypass.invoke(userManager::class.java, userManager, "getUsers", true, true, true) as List<*>
-            val userInfoFields = HiddenApiBypass.getInstanceFields(Class.forName("android.content.pm.UserInfo")) as? List<Field> ?: return
+            val userInfoFields = HiddenApiBypass.getInstanceFields(Class.forName("android.content.pm.UserInfo")) as List<Field> ?: return
           
             val idField = userInfoFields.first { it.name == "id" }
             val nameField = userInfoFields.first { it.name == "name" }
@@ -67,6 +73,22 @@ class ResolutionViewModel : ViewModel() {
             usersList.value = mappedUsers
         } catch (e: Exception) {
             Log.e("fetchUsers", e.message, e)
+        }
+    }
+    
+    val confirmCountdown: MutableLiveData<Int> by lazy {
+        MutableLiveData<Int>()
+    }
+    val confirmCountdownJob: MutableLiveData<Job> by lazy {
+        MutableLiveData<Job>()
+    }
+    fun startConfirmCountdownTo(callback: () -> Unit) {
+        confirmCountdownJob.value = CoroutineScope(Dispatchers.Default).launch {
+            for (countdown in 3 downTo 0) {
+                confirmCountdown.value = countdown
+                delay(1000)
+            }
+            callback()
         }
     }
     
