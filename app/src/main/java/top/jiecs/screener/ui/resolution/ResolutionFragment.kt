@@ -62,22 +62,24 @@ class ResolutionFragment : Fragment() {
         resolutionViewModel.fetchUsers()
 
         resolutionViewModel.physicalResolutionMap.observe(viewLifecycleOwner) {
-            binding.textResolution.text = "Physical ${it["height"].toString()}x${it["width"].toString()}; DPI ${it["dpi"].toString()}"
+            binding.textResolution.text = "Physical ${it?.get("height").toString()}x${
+                it?.get("width").toString()}; DPI ${it?.get("dpi").toString()}"
         }
         val textHeight = binding.textHeight.editText!!
         val textWidth = binding.textWidth.editText!!
         val textDpi = binding.textDpi.editText!!
         resolutionViewModel.resolutionMap.observe(viewLifecycleOwner) {
-            textHeight.setText(it["height"]?.toInt().toString())
-            textWidth.setText(it["width"]?.toInt().toString())
-            textDpi.setText(it["dpi"]?.toInt().toString())
+            textHeight.setText(it?.get("height")?.toInt()?.toString())
+            textWidth.setText(it?.get("width")?.toInt()?.toString())
+            textDpi.setText(it?.get("dpi")?.toInt()?.toString())
         }
         val chipGroup = binding.chipGroup
         resolutionViewModel.usersList.observe(viewLifecycleOwner) {
+            if (it.isEmpty()) return@observe
             chipGroup.removeAllViews()
             for (user in it) {
                 chipGroup.addView(Chip(chipGroup.context).apply {
-                    text = "${user["name"]} (${user["id"]})"
+                    text = "${user?.get("name")} (${user?.get("id")})"
                     isCheckable = true
                 })
             }
@@ -93,7 +95,7 @@ class ResolutionFragment : Fragment() {
             val users = resolutionViewModel.usersList.value!!
             if (index >= users.size) return@setOnCheckedStateChangeListener
             val currentUser = users[index]
-            userId = currentUser["id"] as Int
+            userId = currentUser?.get("id") as Int
         }
         binding.sliderScale.addOnChangeListener { _, value, fromUser ->
             value.toInt().let {
