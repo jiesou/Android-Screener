@@ -6,16 +6,14 @@ import androidx.navigation.findNavController
 import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.setupActionBarWithNavController
 import androidx.navigation.ui.setupWithNavController
-import com.google.android.material.bottomnavigation.BottomNavigationView
 import top.jiecs.screener.databinding.ActivityMainBinding
-import androidx.activity.enableEdgeToEdge
 
 import com.google.android.material.snackbar.Snackbar
 
 import rikka.shizuku.Shizuku
-import rikka.shizuku.ShizukuBinderWrapper
-import rikka.shizuku.ShizukuSystemProperties
 import android.content.pm.PackageManager
+import androidx.activity.enableEdgeToEdge
+import androidx.navigation.fragment.NavHostFragment
 
 class MainActivity : AppCompatActivity() {
 
@@ -39,11 +37,11 @@ class MainActivity : AppCompatActivity() {
         )
         setupActionBarWithNavController(navController, appBarConfiguration)
         binding.navView.setupWithNavController(navController)
-		
-		Shizuku.addRequestPermissionResultListener(REQUEST_PERMISSION_RESULT_LISTENER)
+
+        Shizuku.addRequestPermissionResultListener(onRequestPermissionResultListener)
     }
 
-    private val REQUEST_PERMISSION_RESULT_LISTENER =
+    private val onRequestPermissionResultListener =
       Shizuku.OnRequestPermissionResultListener { _, grantResult ->
       // Show message based on the result
       if (grantResult != PackageManager.PERMISSION_GRANTED) {
@@ -54,10 +52,10 @@ class MainActivity : AppCompatActivity() {
     
     override fun onResume() {
         super.onResume()
-        checkPermission(0)
+        checkPermission()
     }
 
-    private fun checkPermission(code: Int): Boolean {
+    private fun checkPermission(): Boolean {
       if (Shizuku.isPreV11()) {
           // Pre-v11 is unsupported
           return false
@@ -74,7 +72,7 @@ class MainActivity : AppCompatActivity() {
         }
         else -> {
             // Request the permission
-            Shizuku.requestPermission(code)
+            Shizuku.requestPermission(0)
             false
         }
       }
@@ -82,7 +80,7 @@ class MainActivity : AppCompatActivity() {
     
     override fun onDestroy() {
         super.onDestroy()
-        Shizuku.removeRequestPermissionResultListener(REQUEST_PERMISSION_RESULT_LISTENER)
+        Shizuku.removeRequestPermissionResultListener(onRequestPermissionResultListener)
 	}
     
     

@@ -1,14 +1,9 @@
 package top.jiecs.screener.ui.resolution
 
-import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 
-import android.os.Build
 import android.view.Display
-import android.util.DisplayMetrics
-import android.view.WindowManager
-//import android.content.pm.UserInfo
 import android.util.Log
 import java.lang.reflect.Field
 import android.graphics.Point
@@ -21,7 +16,6 @@ import kotlinx.coroutines.launch
 
 import top.jiecs.screener.units.ApiCaller
 import org.lsposed.hiddenapibypass.HiddenApiBypass
-import top.jiecs.screener.ui.resolution.ResolutionFragment
 
 class ResolutionViewModel : ViewModel() {
 
@@ -34,21 +28,21 @@ class ResolutionViewModel : ViewModel() {
     fun fetchScreenResolution() {
         val windowManager = ApiCaller.iWindowManager
 
-        val physical_size = Point()
-        HiddenApiBypass.invoke(windowManager::class.java, windowManager, "getInitialDisplaySize", Display.DEFAULT_DISPLAY, physical_size)
-        val physical_dpi = HiddenApiBypass.invoke(windowManager::class.java, windowManager, "getInitialDisplayDensity", Display.DEFAULT_DISPLAY) as Int
+        val physicalSize = Point()
+        HiddenApiBypass.invoke(windowManager::class.java, windowManager, "getInitialDisplaySize", Display.DEFAULT_DISPLAY, physicalSize)
+        val physicalDpi = HiddenApiBypass.invoke(windowManager::class.java, windowManager, "getInitialDisplayDensity", Display.DEFAULT_DISPLAY) as Int
         physicalResolutionMap.value = mapOf(
-          "height" to physical_size.y.toFloat(),
-          "width" to physical_size.x.toFloat(),
-          "dpi" to physical_dpi.toFloat())
+          "height" to physicalSize.y.toFloat(),
+          "width" to physicalSize.x.toFloat(),
+          "dpi" to physicalDpi.toFloat())
         
-        val override_size = Point()
-        HiddenApiBypass.invoke(windowManager::class.java, windowManager, "getBaseDisplaySize", Display.DEFAULT_DISPLAY, override_size)
-        val override_dpi = HiddenApiBypass.invoke(windowManager::class.java, windowManager, "getBaseDisplayDensity", Display.DEFAULT_DISPLAY) as Int
+        val overrideSize = Point()
+        HiddenApiBypass.invoke(windowManager::class.java, windowManager, "getBaseDisplaySize", Display.DEFAULT_DISPLAY, overrideSize)
+        val overrideDpi = HiddenApiBypass.invoke(windowManager::class.java, windowManager, "getBaseDisplayDensity", Display.DEFAULT_DISPLAY) as Int
         resolutionMap.value = mapOf(
-          "height" to override_size.y.toFloat(),
-          "width" to override_size.x.toFloat(),
-          "dpi" to override_dpi.toFloat())
+          "height" to overrideSize.y.toFloat(),
+          "width" to overrideSize.x.toFloat(),
+          "dpi" to overrideDpi.toFloat())
     }
     
     val usersList: MutableLiveData<List<Map<String, Any>>> by lazy {

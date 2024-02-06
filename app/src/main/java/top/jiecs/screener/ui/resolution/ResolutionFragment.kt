@@ -4,17 +4,14 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.TextView
 import com.google.android.material.chip.Chip
 
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import top.jiecs.screener.databinding.FragmentResolutionBinding
-import top.jiecs.screener.ui.resolution.ConfirmationDialogFragment
 import top.jiecs.screener.units.ApiCaller
 import top.jiecs.screener.R
 
-import android.content.Context
 import android.text.Editable
 
 import androidx.navigation.findNavController
@@ -35,30 +32,35 @@ class ResolutionFragment : Fragment() {
     
     private lateinit var resolutionViewModel: ResolutionViewModel
     
-    lateinit var apiCaller: ApiCaller
+    private lateinit var apiCaller: ApiCaller
     
     // determine the most accurate original scale value required by the user
     // The real-time changing ScaleSlider value will be changed
     // when scaling cannot be performed at the original value
     // Apply resolution still according to real-time value
     private var stuckScaleValue = 0
-    var userId = 0
-    
+    private var userId = 0
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
         resolutionViewModel =
-            ViewModelProvider(this).get(ResolutionViewModel::class.java)
+            ViewModelProvider(this)[ResolutionViewModel::class.java]
 
         _binding = FragmentResolutionBinding.inflate(inflater, container, false)
-        val root: View = binding.root
-        
+
+        return binding.root
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+
         apiCaller = ApiCaller()
         resolutionViewModel.fetchScreenResolution()
         resolutionViewModel.fetchUsers()
-        
+
         resolutionViewModel.physicalResolutionMap.observe(viewLifecycleOwner) {
             binding.textResolution.text = "Physical ${it["height"].toString()}x${it["width"].toString()}; DPI ${it["dpi"].toString()}"
         }
@@ -72,7 +74,6 @@ class ResolutionFragment : Fragment() {
         }
         val chipGroup = binding.chipGroup
         resolutionViewModel.usersList.observe(viewLifecycleOwner) {
-            Log.d("usersRecved", it.toString())
             chipGroup.removeAllViews()
             for (user in it) {
                 chipGroup.addView(Chip(chipGroup.context).apply {
@@ -84,7 +85,7 @@ class ResolutionFragment : Fragment() {
             val firstChip = chipGroup.getChildAt(0) as Chip
             firstChip.isChecked = true
         }
-        
+
         chipGroup.setOnCheckedStateChangeListener { _, checkedIds ->
             Log.d("index", checkedIds.toString())
             if (checkedIds.isEmpty()) return@setOnCheckedStateChangeListener
@@ -97,81 +98,78 @@ class ResolutionFragment : Fragment() {
         binding.sliderScale.addOnChangeListener { _, value, fromUser ->
             value.toInt().let {
                 if (fromUser) stuckScaleValue = it
-                updateDpiEditorOrScaleSlider(scale_value=it)
+                updateDpiEditorOrScaleSlider(scaleValue=it)
             }
         }
         textWidth.doAfterTextChanged { s: Editable? ->
             if (s.isNullOrBlank()) return@doAfterTextChanged
             val physical = resolutionViewModel.physicalResolutionMap.value ?: return@doAfterTextChanged
-            val aspect_ratio = physical["height"]!! / physical["width"]!!
+            val aspectRatio = physical["height"]!! / physical["width"]!!
 
             when (s.hashCode()) {
                 textHeight.text.hashCode() -> {
-                    val equal_ratio_width = s.toString().toInt() / aspect_ratio
-                    textWidth.setText(equal_ratio_width.roundToInt().toString())
+                    val equalRatioWidth = s.toString().toInt() / aspectRatio
+                    textWidth.setText(equalRatioWidth.roundToInt().toString())
                 }
                 textWidth.text.hashCode() -> {
-                    val equal_ratio_height = s.toString().toInt() * aspect_ratio
-                    textHeight.setText(equal_ratio_height.roundToInt().toString())
+                    val equalRatioHeight = s.toString().toInt() * aspectRatio
+                    textHeight.setText(equalRatioHeight.roundToInt().toString())
                 }
             }
-            updateDpiEditorOrScaleSlider(scale_value=stuckScaleValue)
+            updateDpiEditorOrScaleSlider(scaleValue=stuckScaleValue)
         }
         textDpi.doAfterTextChanged { s: Editable? ->
             if (s.isNullOrBlank()) return@doAfterTextChanged
-            updateDpiEditorOrScaleSlider(scale_value=null)
+            updateDpiEditorOrScaleSlider(scaleValue=null)
         }
         binding.btApply.setOnClickListener { v: View? ->
             apiCaller.applyResolution(
-              textHeight.text.toString().toInt(),
-              textWidth.text.toString().toInt(),
-              textDpi.text.toString().toInt(),
-              userId
+                textHeight.text.toString().toInt(),
+                textWidth.text.toString().toInt(),
+                textDpi.text.toString().toInt(),
+                userId
             )
-            Log.d("pfm", getParentFragmentManager().toString())
-            Log.d("rf", getParentFragmentManager().findFragmentById(R.id.nav_resolution).toString())
             val navController = v?.findNavController()
-            navController?.navigate(R.id.nav_resolution_confirmation)
+            navController?.navigate(R.id.action_nav_resolution_to_nav_resolution_confirmation)
         }
         binding.btReset.setOnClickListener {
             apiCaller.resetResolution(userId)
         }
-        return root
     }
     
-    fun updateDpiEditorOrScaleSlider(scale_value: Int?) {
-        val scaled_height = binding.textHeight.editText!!.text.toString().toFloatOrNull() ?: return
-        val scaled_width = binding.textWidth.editText!!.text.toString().toFloatOrNull() ?: return
+    private fun updateDpiEditorOrScaleSlider(scaleValue: Int?) {
+        val scaledHeight = binding.textHeight.editText!!.text.toString().toFloatOrNull() ?: return
+        val scaledWidth = binding.textWidth.editText!!.text.toString().toFloatOrNull() ?: return
         val physical = resolutionViewModel.physicalResolutionMap.value ?: return
         
         // Calculate the DPI that keeps the display size proportionally scaled
         // Get the ratio of virtual to physical resolution diagonal (pythagorean theorem)
         // physical_adj_ratio = √(h²+w²/ph²+pw²)
-        val physical_adj_ratio = sqrt((scaled_height.pow(2) + scaled_width.pow(2)) /
+        val physicalAdjRatio = sqrt((scaledHeight.pow(2) + scaledWidth.pow(2)) /
             (physical["height"]!!.pow(2) + physical["width"]!!.pow(2)))
         
-        val base_dpi = physical["dpi"]!! * physical_adj_ratio
-        if (scale_value === null) {
-            val scaled_dpi = binding.textDpi.editText!!.text.toString().toFloatOrNull() ?: base_dpi
+        val baseDpi = physical["dpi"]!! * physicalAdjRatio
+        if (scaleValue === null) {
+            val scaledDpi = binding.textDpi.editText!!.text.toString().toFloatOrNull() ?: baseDpi
             // scale_ratio = scaled_dpi / (physical_dpi * physical_adj_ratio)
-            val scale_ratio = scaled_dpi / base_dpi
+            val scaleRatio = scaledDpi / baseDpi
             // 0.5 -> -50 ; 1 -> 0 ; 1.25 -> 25
-            val scaled_value = (scale_ratio - 1) * 100
+            val scaledValue = (scaleRatio - 1) * 100
             // Round to two decimal places
             // scale_ratio = ((scale_ratio * 100).roundToInt()) / 100
-            if (scaled_value < -50 || scaled_value > 50) {
+            if (scaledValue < -50 || scaledValue > 50) {
                 binding.textDpi.error = "over limit"
                 return
             } else {
-                binding.sliderScale.value = ((scaled_value / 5).roundToInt() * 5).toFloat()
+                binding.sliderScale.value = ((scaledValue / 5).roundToInt() * 5).toFloat()
                 binding.textDpi.error = null
             }
         } else {
             // -50 -> 0.5 ; 0 -> 1 ; 25 -> 1.25
-            val scale_ratio = (scale_value * 0.01 + 1).toFloat()
+            val scaleRatio = (scaleValue * 0.01 + 1).toFloat()
             // scaled_dpi = physical_dpi * physical_adj_ratio * scale_ratio
-            val scaled_dpi = (base_dpi * scale_ratio).roundToInt()
-            binding.textDpi.editText!!.setText(scaled_dpi.toString())
+            val scaledDpi = (baseDpi * scaleRatio).roundToInt()
+            binding.textDpi.editText!!.setText(scaledDpi.toString())
         }
     }
 

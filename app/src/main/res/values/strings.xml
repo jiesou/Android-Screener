@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">Screener</string>
+    <string name="app_name" translatable="false">Screener</string>
     <string name="resolution">Resolution</string>
     <string name="frame_rate">Frame Rate</string>
     <string name="settings">Settings</string>

@@ -10,7 +10,7 @@
         android:label="@string/resolution"
         tools:layout="@layout/fragment_resolution">
         <action
-            android:id="@+id/action_to_nav_resolution_confirmation"
+            android:id="@+id/action_nav_resolution_to_nav_resolution_confirmation"
             app:destination="@id/nav_resolution_confirmation" />
     </fragment>
     

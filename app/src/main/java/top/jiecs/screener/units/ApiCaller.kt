@@ -6,9 +6,7 @@ import org.lsposed.hiddenapibypass.HiddenApiBypass
 import rikka.shizuku.ShizukuBinderWrapper
 import rikka.shizuku.SystemServiceHelper
 
-import android.util.Log
-
-class ApiCaller() {
+class ApiCaller {
     companion object {
         lateinit var iWindowManager: Any
         lateinit var iUserManager: Any

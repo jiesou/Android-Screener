@@ -23,7 +23,7 @@ class FrameRateFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View {
         val frameRateViewModel =
-            ViewModelProvider(this).get(FrameRateViewModel::class.java)
+            ViewModelProvider(this)[FrameRateViewModel::class.java]
 
         _binding = FragmentFrameRateBinding.inflate(inflater, container, false)
         val root: View = binding.root

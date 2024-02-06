@@ -11,6 +11,7 @@
 	<string name="apply">应用</string>
     <string name="reset">重置</string>
     <string name="success">成功</string>
+    <string name="confirmation_dialog">确认对话框</string>
     <string name="reset_hint">如果要撤销更改，请等待 10 秒来恢复</string>
     <string name="looks_fine">看着不错</string>
 	<string name="undo_changes">撤销更改（%1$s）</string>
