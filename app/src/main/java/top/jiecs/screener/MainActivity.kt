@@ -17,7 +17,7 @@ import top.jiecs.screener.databinding.ActivityMainBinding
 class MainActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityMainBinding
-    private val mainViewModel by viewModels<MainViewModel>()
+    private val mainViewModel: MainViewModel by viewModels()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         enableEdgeToEdge()
@@ -54,10 +54,6 @@ class MainActivity : AppCompatActivity() {
         super.onResume()
         if (checkPermission()) {
             mainViewModel.shizukuPermissionGranted.value = true
-            Snackbar.make(
-                binding.root, R.string.shizuku_permission_granted,
-                Snackbar.LENGTH_SHORT
-            ).show()
         } else {
             Snackbar.make(
                 binding.root, R.string.shizuku_not_available,

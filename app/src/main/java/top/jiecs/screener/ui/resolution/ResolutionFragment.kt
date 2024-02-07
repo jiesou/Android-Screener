@@ -2,7 +2,6 @@ package top.jiecs.screener.ui.resolution
 
 import android.os.Bundle
 import android.text.Editable
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -24,12 +23,12 @@ import kotlin.math.sqrt
 class ResolutionFragment : Fragment() {
 
     private var _binding: FragmentResolutionBinding? = null
-   
+
     // This property is only valid between onCreateView and
     // onDestroyView.
     private val binding get() = _binding!!
     
-    private val resolutionViewModel by viewModels<ResolutionViewModel>()
+    private val resolutionViewModel: ResolutionViewModel by viewModels()
     private val mainViewModel by activityViewModels<MainViewModel>()
     
     private lateinit var apiCaller: ApiCaller
@@ -39,7 +38,15 @@ class ResolutionFragment : Fragment() {
     // when scaling cannot be performed at the original value
     // Apply resolution still according to real-time value
     private var stuckScaleValue = 0
-    private var userId = 0
+
+    private val userId: Int
+        get() {
+            val usersList = resolutionViewModel.usersList.value ?: return 0
+            val checkedChipId = binding.chipGroup.checkedChipId
+
+            val user = usersList.getOrNull(checkedChipId - 1) ?: return 0
+            return user["id"] as Int
+        }
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -77,6 +84,7 @@ class ResolutionFragment : Fragment() {
         val chipGroup = binding.chipGroup
         resolutionViewModel.usersList.observe(viewLifecycleOwner) {
             if (it.isEmpty()) return@observe
+            // for each user, create a chip to chip group
             chipGroup.removeAllViews()
             for (user in it) {
                 chipGroup.addView(Chip(chipGroup.context).apply {
@@ -89,15 +97,6 @@ class ResolutionFragment : Fragment() {
             firstChip.isChecked = true
         }
 
-        chipGroup.setOnCheckedStateChangeListener { _, checkedIds ->
-            Log.d("index", checkedIds.toString())
-            if (checkedIds.isEmpty()) return@setOnCheckedStateChangeListener
-            val index = checkedIds[0] - 1
-            val users = resolutionViewModel.usersList.value!!
-            if (index >= users.size) return@setOnCheckedStateChangeListener
-            val currentUser = users[index]
-            userId = currentUser?.get("id") as Int
-        }
         binding.sliderScale.addOnChangeListener { _, value, fromUser ->
             value.toInt().let {
                 if (fromUser) stuckScaleValue = it
@@ -105,6 +104,7 @@ class ResolutionFragment : Fragment() {
             }
         }
         textWidth.doAfterTextChanged { s: Editable? ->
+            // auto calculate the other dimension when one dimension is changed
             if (s.isNullOrBlank()) return@doAfterTextChanged
             val physical = resolutionViewModel.physicalResolutionMap.value ?: return@doAfterTextChanged
             val aspectRatio = physical["height"]!! / physical["width"]!!
