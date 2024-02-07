@@ -5,6 +5,8 @@
     <string name="frame_rate">Frame Rate</string>
     <string name="settings">Settings</string>
     <string name="shizuku_not_available">Shizuku is not available</string>
+    <string name="shizuku_permission_granted">Shizuku permission granted</string>
+    <string name="shizuku_permission_granted_action" translatable="false">top.jiecs.screener.SHIZUKU_PERMISSION_GRANTED</string>
 	<string name="height">Height</string>
 	<string name="width">Width</string>
     <string name="dpi">DPI</string>

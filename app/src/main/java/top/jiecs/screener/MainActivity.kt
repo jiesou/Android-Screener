@@ -1,23 +1,23 @@
 package top.jiecs.screener
 
+import android.content.pm.PackageManager
 import android.os.Bundle
+import androidx.activity.enableEdgeToEdge
+import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.navigation.findNavController
 import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.setupActionBarWithNavController
 import androidx.navigation.ui.setupWithNavController
+import com.google.android.material.snackbar.Snackbar
+import rikka.shizuku.Shizuku
 import top.jiecs.screener.databinding.ActivityMainBinding
 
-import com.google.android.material.snackbar.Snackbar
-
-import rikka.shizuku.Shizuku
-import android.content.pm.PackageManager
-import androidx.activity.enableEdgeToEdge
-import androidx.navigation.fragment.NavHostFragment
 
 class MainActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityMainBinding
+    private val mainViewModel by viewModels<MainViewModel>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         enableEdgeToEdge()
@@ -38,21 +38,32 @@ class MainActivity : AppCompatActivity() {
         setupActionBarWithNavController(navController, appBarConfiguration)
         binding.navView.setupWithNavController(navController)
 
-        Shizuku.addRequestPermissionResultListener(onRequestPermissionResultListener)
+        Shizuku.addRequestPermissionResultListener { _, grantResult ->
+            // Show message based on the result
+            if (grantResult == PackageManager.PERMISSION_GRANTED) {
+                mainViewModel.shizukuPermissionGranted.value = true
+                Snackbar.make(
+                    binding.root, R.string.shizuku_permission_granted,
+                    Snackbar.LENGTH_SHORT
+                ).show()
+            }
+        }
     }
 
-    private val onRequestPermissionResultListener =
-      Shizuku.OnRequestPermissionResultListener { _, grantResult ->
-      // Show message based on the result
-      if (grantResult != PackageManager.PERMISSION_GRANTED) {
-        Snackbar.make(binding.root, R.string.shizuku_not_available,
-          Snackbar.LENGTH_SHORT).show()
-      }
-    }
-    
     override fun onResume() {
         super.onResume()
-        checkPermission()
+        if (checkPermission()) {
+            mainViewModel.shizukuPermissionGranted.value = true
+            Snackbar.make(
+                binding.root, R.string.shizuku_permission_granted,
+                Snackbar.LENGTH_SHORT
+            ).show()
+        } else {
+            Snackbar.make(
+                binding.root, R.string.shizuku_not_available,
+                Snackbar.LENGTH_SHORT
+            ).show()
+        }
     }
 
     private fun checkPermission(): Boolean {
@@ -80,8 +91,6 @@ class MainActivity : AppCompatActivity() {
     
     override fun onDestroy() {
         super.onDestroy()
-        Shizuku.removeRequestPermissionResultListener(onRequestPermissionResultListener)
+        // Shizuku.removeRequestPermissionResultListener(onRequestPermissionResultListener)
 	}
-    
-    
 }

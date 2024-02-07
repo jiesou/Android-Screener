@@ -1,26 +1,25 @@
 package top.jiecs.screener.ui.resolution
 
 import android.os.Bundle
+import android.text.Editable
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import com.google.android.material.chip.Chip
-
+import androidx.core.widget.doAfterTextChanged
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.ViewModelProvider
+import androidx.fragment.app.activityViewModels
+import androidx.fragment.app.viewModels
+import androidx.navigation.findNavController
+import com.google.android.material.chip.Chip
+import top.jiecs.screener.MainViewModel
+import top.jiecs.screener.R
 import top.jiecs.screener.databinding.FragmentResolutionBinding
 import top.jiecs.screener.units.ApiCaller
-import top.jiecs.screener.R
-
-import android.text.Editable
-
-import androidx.navigation.findNavController
-import androidx.core.widget.doAfterTextChanged
 import kotlin.math.pow
-import kotlin.math.sqrt
 import kotlin.math.roundToInt
+import kotlin.math.sqrt
 
-import android.util.Log
 
 class ResolutionFragment : Fragment() {
 
@@ -30,7 +29,8 @@ class ResolutionFragment : Fragment() {
     // onDestroyView.
     private val binding get() = _binding!!
     
-    private lateinit var resolutionViewModel: ResolutionViewModel
+    private val resolutionViewModel by viewModels<ResolutionViewModel>()
+    private val mainViewModel by activityViewModels<MainViewModel>()
     
     private lateinit var apiCaller: ApiCaller
     
@@ -46,11 +46,7 @@ class ResolutionFragment : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        resolutionViewModel =
-            ViewModelProvider(this)[ResolutionViewModel::class.java]
-
         _binding = FragmentResolutionBinding.inflate(inflater, container, false)
-
         return binding.root
     }
 
@@ -58,8 +54,13 @@ class ResolutionFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         apiCaller = ApiCaller()
-        resolutionViewModel.fetchScreenResolution()
-        resolutionViewModel.fetchUsers()
+
+        mainViewModel.shizukuPermissionGranted.observe(viewLifecycleOwner) {
+            if (it) {
+                resolutionViewModel.fetchScreenResolution()
+                resolutionViewModel.fetchUsers()
+            }
+        }
 
         resolutionViewModel.physicalResolutionMap.observe(viewLifecycleOwner) {
             binding.textResolution.text = "Physical ${it?.get("height").toString()}x${

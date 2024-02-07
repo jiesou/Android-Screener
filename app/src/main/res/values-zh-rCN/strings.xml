@@ -4,6 +4,7 @@
     <string name="frame_rate">刷新率</string>
     <string name="settings">设置</string>
     <string name="shizuku_not_available">Shizuku 不可用</string>
+    <string name="shizuku_permission_granted">Shizuku 权限已授予</string>
 	<string name="height">高</string>
 	<string name="width">宽</string>
     <string name="dpi">DPI</string>
