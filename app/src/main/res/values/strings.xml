@@ -7,17 +7,27 @@
     <string name="shizuku_not_available">Shizuku is not available</string>
     <string name="shizuku_permission_granted">Shizuku permission granted</string>
     <string name="shizuku_permission_granted_action" translatable="false">top.jiecs.screener.SHIZUKU_PERMISSION_GRANTED</string>
-	<string name="height">Height</string>
-	<string name="width">Width</string>
+
+    <!-- Resolution -->
+    <string name="height">Height</string>
+    <string name="width">Width</string>
     <string name="dpi">DPI</string>
     <string name="scale">Scale</string>
-	<string name="apply">Apply</string>
+    <string name="apply">Apply</string>
     <string name="reset">Reset</string>
     <string name="success">Success</string>
     <string name="confirmation_dialog">Confirmation Dialog</string>
     <string name="reset_hint">If you wish to undo the changes, wait 10 seconds to resume.</string>
     <string name="looks_fine">Looks Fine</string>
-	<string name="undo_changes">Undo Changes (%1$s)</string>
+    <string name="undo_changes">Undo Changes (%1$s)</string>
     <string name="undone">Undone</string>
-    
+
+    <!-- Settings -->
+    <string name="display_modes">Display Modes</string>
+    <string name="quick_settings">Quick Settings</string>
+    <string name="show_in_notification">Show in Notification</string>
+    <string name="show_in_qs_panel">Show in QS Panel</string>
+    <string name="show_in_qs_panel_only_first_two">Only first two</string>
+    <string name="show_in_qs_panel_only_first_two_summary">Only switch the first two display modes in the QS panel</string>
+
 </resources>

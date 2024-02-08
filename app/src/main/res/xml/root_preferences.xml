@@ -1,0 +1,27 @@
+<PreferenceScreen xmlns:app="http://schemas.android.com/apk/res-auto">
+    <Preference
+        app:key="display_modes"
+        app:title="@string/display_modes"
+        app:fragment="top.jiecs.screener.ui.displaymode.DisplayModeFragment" />
+
+    <PreferenceCategory app:title="@string/quick_settings">
+
+            <SwitchPreferenceCompat
+            app:enabled="false"
+            app:key="show_in_notification"
+            app:title="@string/show_in_notification" />
+
+        <SwitchPreferenceCompat
+            app:enabled="false"
+            app:key="show_in_qs_panel"
+            app:title="@string/show_in_qs_panel" />
+
+        <SwitchPreferenceCompat
+            app:dependency="show_in_qs_panel"
+            app:key="show_in_qs_panel_only_first_two"
+            app:summary="@string/show_in_qs_panel_only_first_two_summary"
+            app:title="@string/show_in_qs_panel_only_first_two" />
+
+    </PreferenceCategory>
+
+</PreferenceScreen>
