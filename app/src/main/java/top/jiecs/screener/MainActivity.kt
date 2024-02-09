@@ -6,17 +6,21 @@ import androidx.activity.enableEdgeToEdge
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.navigation.findNavController
+import androidx.navigation.fragment.findNavController
 import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.setupActionBarWithNavController
 import androidx.navigation.ui.setupWithNavController
 import androidx.preference.Preference
 import androidx.preference.PreferenceFragmentCompat
 import com.google.android.material.snackbar.Snackbar
+
 import rikka.shizuku.Shizuku
+
 import top.jiecs.screener.databinding.ActivityMainBinding
+import top.jiecs.screener.ui.displaymode.DisplayModeFragment
 
 
-class MainActivity : AppCompatActivity() {
+class MainActivity : AppCompatActivity(), PreferenceFragmentCompat.OnPreferenceStartFragmentCallback {
 
     private lateinit var binding: ActivityMainBinding
     private val mainViewModel: MainViewModel by viewModels()
@@ -31,7 +35,7 @@ class MainActivity : AppCompatActivity() {
         val navController = findNavController(R.id.nav_host_fragment_activity_main)
 
         // Passing each menu ID as a set of Ids because each
-        // menu should be considered as top level destinations.
+        // menu should be considered as top (same) level destinations.
         val appBarConfiguration = AppBarConfiguration(
             setOf(
                 R.id.nav_resolution, R.id.nav_frame_rate, R.id.nav_settings
@@ -86,9 +90,21 @@ class MainActivity : AppCompatActivity() {
         }
       }
     }
-    
-    override fun onDestroy() {
-        super.onDestroy()
-        // Shizuku.removeRequestPermissionResultListener(onRequestPermissionResultListener)
-	}
+
+    override fun onPreferenceStartFragment(
+        caller: PreferenceFragmentCompat,
+        pref: Preference
+    ): Boolean {
+        val directionId = when (pref.fragment) {
+            DisplayModeFragment::class.java.name -> R.id.nav_display_modes
+            else -> return false
+        }
+        caller.findNavController().navigate(directionId)
+        return true
+    }
+
+    override fun onSupportNavigateUp(): Boolean {
+        val navController = findNavController(R.id.nav_host_fragment_activity_main)
+        return navController.navigateUp() || super.onSupportNavigateUp()
+    }
 }
