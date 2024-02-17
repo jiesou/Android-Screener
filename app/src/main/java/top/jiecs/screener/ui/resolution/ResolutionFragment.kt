@@ -42,7 +42,7 @@ class ResolutionFragment : Fragment() {
     private val userId: Int
         get() {
             val usersList = resolutionViewModel.usersList.value ?: return 0
-            val checkedChipId = binding.chipGroup.checkedChipId
+            val checkedChipId = binding.resolution_editor.chipGroup.checkedChipId
 
             val user = usersList.getOrNull(checkedChipId - 1) ?: return 0
             return user["id"] as Int

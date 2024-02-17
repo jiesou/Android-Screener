@@ -12,6 +12,7 @@ import androidx.navigation.ui.setupActionBarWithNavController
 import androidx.navigation.ui.setupWithNavController
 import androidx.preference.Preference
 import androidx.preference.PreferenceFragmentCompat
+import com.google.android.material.color.DynamicColors
 import com.google.android.material.snackbar.Snackbar
 
 import rikka.shizuku.Shizuku

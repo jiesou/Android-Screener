@@ -24,6 +24,7 @@
 
     <!-- Settings -->
     <string name="display_modes">Display Modes</string>
+    <string name="new_display_mode">New Display Mode</string>
     <string name="quick_settings">Quick Settings</string>
     <string name="show_in_notification">Show in Notification</string>
     <string name="show_in_qs_panel">Show in QS Panel</string>
