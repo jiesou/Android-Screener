@@ -3,7 +3,7 @@ A simple Shizuku tool for easily adjusting screen resolution and frame rate
 
 > Still under development
 
-> I am busy with my studies and have no time to update this app
+> I am busy with my studies and have no time to update this app (for now). Contributions welcome
 
 # Screenshots (Preview)
 
