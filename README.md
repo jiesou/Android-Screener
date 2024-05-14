@@ -3,6 +3,8 @@ A simple Shizuku tool for easily adjusting screen resolution and frame rate
 
 > Still under development
 
+> I am busy with my studies and have no time to update this app
+
 # Screenshots (Preview)
 
 <img src="https://github.com/jiesou/Android-Screener/assets/84175239/9279a68e-8660-4119-b69a-31bb7b387c41" width="240px" alt="Screener Home Page">
