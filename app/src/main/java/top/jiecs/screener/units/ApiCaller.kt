@@ -1,5 +1,6 @@
 package top.jiecs.screener.units
 
+import android.annotation.SuppressLint
 import android.graphics.Point
 import java.lang.reflect.Field
 import android.view.Display
@@ -26,6 +27,7 @@ class ApiCaller {
             }
         }
 
+    @SuppressLint("PrivateApi")
     fun fetchUsers(): List<Map<String, Any>> {
         try {
             val users = HiddenApiBypass.invoke(iUserManager::class.java, iUserManager, "getUsers", true, true, true) as List<*>

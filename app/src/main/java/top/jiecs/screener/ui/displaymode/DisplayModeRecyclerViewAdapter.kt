@@ -1,13 +1,11 @@
 package top.jiecs.screener.ui.displaymode
 
-import androidx.recyclerview.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import android.widget.TextView
-
-import top.jiecs.screener.ui.displaymode.DisplayModeContent.DisplayMode
-import top.jiecs.screener.databinding.FragmentDisplayModeBinding
+import androidx.recyclerview.widget.RecyclerView
 import top.jiecs.screener.databinding.FragmentDisplayModeItemBinding
+import top.jiecs.screener.ui.displaymode.DisplayModeContent.DisplayMode
 
 /**
  * [RecyclerView.Adapter] that can display a [DisplayMode].
