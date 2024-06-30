@@ -30,9 +30,9 @@ class ResolutionFragment : Fragment() {
 
     private val resolutionViewModel: ResolutionViewModel by viewModels()
     private val mainViewModel by activityViewModels<MainViewModel>()
-    
+
     private lateinit var apiCaller: ApiCaller
-    
+
     // determine the most accurate original scale value required by the user
     // The real-time changing ScaleSlider value will be changed
     // when scaling cannot be performed at the original value
@@ -61,7 +61,8 @@ class ResolutionFragment : Fragment() {
 
         resolutionViewModel.physicalResolutionMap.observe(viewLifecycleOwner) {
             binding.textResolution.text = "Physical ${it?.get("height").toString()}x${
-                it?.get("width").toString()}; DPI ${it?.get("dpi").toString()}"
+                it?.get("width").toString()
+            }; DPI ${it?.get("dpi").toString()}"
         }
         val textHeight = binding.resolutionEditor.textHeight.editText!!
         val textWidth = binding.resolutionEditor.textWidth.editText!!
@@ -90,13 +91,14 @@ class ResolutionFragment : Fragment() {
         binding.resolutionEditor.sliderScale.addOnChangeListener { _, value, fromUser ->
             value.toInt().let {
                 if (fromUser) stuckScaleValue = it
-                updateDpiEditorOrScaleSlider(scaleValue=it)
+                updateDpiEditorOrScaleSlider(scaleValue = it)
             }
         }
         textWidth.doAfterTextChanged { s: Editable? ->
             // auto calculate the other dimension when one dimension is changed
             if (s.isNullOrBlank()) return@doAfterTextChanged
-            val physical = resolutionViewModel.physicalResolutionMap.value ?: return@doAfterTextChanged
+            val physical =
+                resolutionViewModel.physicalResolutionMap.value ?: return@doAfterTextChanged
             val aspectRatio = physical["height"]!! / physical["width"]!!
 
             when (s.hashCode()) {
@@ -104,16 +106,17 @@ class ResolutionFragment : Fragment() {
                     val equalRatioWidth = s.toString().toInt() / aspectRatio
                     textWidth.setText(equalRatioWidth.roundToInt().toString())
                 }
+
                 textWidth.text.hashCode() -> {
                     val equalRatioHeight = s.toString().toInt() * aspectRatio
                     textHeight.setText(equalRatioHeight.roundToInt().toString())
                 }
             }
-            updateDpiEditorOrScaleSlider(scaleValue=stuckScaleValue)
+            updateDpiEditorOrScaleSlider(scaleValue = stuckScaleValue)
         }
         textDpi.doAfterTextChanged { s: Editable? ->
             if (s.isNullOrBlank()) return@doAfterTextChanged
-            updateDpiEditorOrScaleSlider(scaleValue=null)
+            updateDpiEditorOrScaleSlider(scaleValue = null)
         }
         binding.btApply.setOnClickListener { v: View? ->
             apiCaller.applyResolution(
@@ -128,21 +131,27 @@ class ResolutionFragment : Fragment() {
             apiCaller.resetResolution()
         }
     }
-    
+
     private fun updateDpiEditorOrScaleSlider(scaleValue: Int?) {
-        val scaledHeight = binding.resolutionEditor.textHeight.editText!!.text.toString().toFloatOrNull() ?: return
-        val scaledWidth = binding.resolutionEditor.textWidth.editText!!.text.toString().toFloatOrNull() ?: return
+        val scaledHeight =
+            binding.resolutionEditor.textHeight.editText!!.text.toString().toFloatOrNull() ?: return
+        val scaledWidth =
+            binding.resolutionEditor.textWidth.editText!!.text.toString().toFloatOrNull() ?: return
         val physical = resolutionViewModel.physicalResolutionMap.value ?: return
-        
+
         // Calculate the DPI that keeps the display size proportionally scaled
         // Get the ratio of virtual to physical resolution diagonal (pythagorean theorem)
         // physical_adj_ratio = √(h²+w²/ph²+pw²)
-        val physicalAdjRatio = sqrt((scaledHeight.pow(2) + scaledWidth.pow(2)) /
-            (physical["height"]!!.pow(2) + physical["width"]!!.pow(2)))
-        
+        val physicalAdjRatio = sqrt(
+            (scaledHeight.pow(2) + scaledWidth.pow(2)) /
+                    (physical["height"]!!.pow(2) + physical["width"]!!.pow(2))
+        )
+
         val baseDpi = physical["dpi"]!! * physicalAdjRatio
         if (scaleValue === null) {
-            val scaledDpi = binding.resolutionEditor.textDpi.editText!!.text.toString().toFloatOrNull() ?: baseDpi
+            val scaledDpi =
+                binding.resolutionEditor.textDpi.editText!!.text.toString().toFloatOrNull()
+                    ?: baseDpi
             // scale_ratio = scaled_dpi / (physical_dpi * physical_adj_ratio)
             val scaleRatio = scaledDpi / baseDpi
             // 0.5 -> -50 ; 1 -> 0 ; 1.25 -> 25
@@ -153,7 +162,8 @@ class ResolutionFragment : Fragment() {
                 binding.resolutionEditor.textDpi.error = "over limit"
                 return
             } else {
-                binding.resolutionEditor.sliderScale.value = ((scaledValue / 5).roundToInt() * 5).toFloat()
+                binding.resolutionEditor.sliderScale.value =
+                    ((scaledValue / 5).roundToInt() * 5).toFloat()
                 binding.resolutionEditor.textDpi.error = null
             }
         } else {

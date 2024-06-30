@@ -21,7 +21,8 @@ import top.jiecs.screener.databinding.ActivityMainBinding
 import top.jiecs.screener.ui.displaymode.DisplayModeFragment
 
 
-class MainActivity : AppCompatActivity(), PreferenceFragmentCompat.OnPreferenceStartFragmentCallback {
+class MainActivity : AppCompatActivity(),
+    PreferenceFragmentCompat.OnPreferenceStartFragmentCallback {
 
     private lateinit var binding: ActivityMainBinding
     private val mainViewModel: MainViewModel by viewModels()
@@ -33,7 +34,8 @@ class MainActivity : AppCompatActivity(), PreferenceFragmentCompat.OnPreferenceS
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        val navHostFragment = supportFragmentManager.findFragmentById(R.id.nav_host_fragment_activity_main) as NavHostFragment
+        val navHostFragment =
+            supportFragmentManager.findFragmentById(R.id.nav_host_fragment_activity_main) as NavHostFragment
         val navController = navHostFragment.navController
 
         // Passing each menu ID as a set of Ids because each
@@ -71,26 +73,28 @@ class MainActivity : AppCompatActivity(), PreferenceFragmentCompat.OnPreferenceS
     }
 
     private fun checkPermission(): Boolean {
-      if (Shizuku.isPreV11()) {
-          // Pre-v11 is unsupported
-          return false
-      }
+        if (Shizuku.isPreV11()) {
+            // Pre-v11 is unsupported
+            return false
+        }
 
-      return when {
-        Shizuku.checkSelfPermission() == PackageManager.PERMISSION_GRANTED -> {
-            // Granted
-            true
+        return when {
+            Shizuku.checkSelfPermission() == PackageManager.PERMISSION_GRANTED -> {
+                // Granted
+                true
+            }
+
+            Shizuku.shouldShowRequestPermissionRationale() -> {
+                // Users choose "Deny and don't ask again"
+                false
+            }
+
+            else -> {
+                // Request the permission
+                Shizuku.requestPermission(0)
+                false
+            }
         }
-        Shizuku.shouldShowRequestPermissionRationale() -> {
-            // Users choose "Deny and don't ask again"
-            false
-        }
-        else -> {
-            // Request the permission
-            Shizuku.requestPermission(0)
-            false
-        }
-      }
     }
 
     override fun onPreferenceStartFragment(

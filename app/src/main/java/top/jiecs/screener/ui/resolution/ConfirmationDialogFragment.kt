@@ -1,20 +1,19 @@
 package top.jiecs.screener.ui.resolution
-import android.os.Bundle
+
 import android.app.Dialog
-import androidx.fragment.app.DialogFragment
-import top.jiecs.screener.R
-import com.google.android.material.dialog.MaterialAlertDialogBuilder
-import androidx.appcompat.app.AlertDialog
 import android.content.DialogInterface
-
-import kotlinx.coroutines.Job
-
-import top.jiecs.screener.units.ApiCaller
+import android.os.Bundle
+import androidx.appcompat.app.AlertDialog
+import androidx.fragment.app.DialogFragment
 import androidx.lifecycle.MutableLiveData
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+import top.jiecs.screener.R
+import top.jiecs.screener.units.ApiCaller
 
 class ConfirmationDialogFragment : DialogFragment() {
 
@@ -59,6 +58,7 @@ class ConfirmationDialogFragment : DialogFragment() {
     private val confirmCountdownJob: MutableLiveData<Job> by lazy {
         MutableLiveData<Job>()
     }
+
     private fun startConfirmCountdownTo(callback: () -> Unit) {
         confirmCountdownJob.value = CoroutineScope(Dispatchers.Main).launch {
             for (countdown in 3 downTo 0) {

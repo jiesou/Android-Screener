@@ -13,7 +13,7 @@
             android:id="@+id/action_nav_resolution_to_nav_resolution_confirmation"
             app:destination="@id/nav_resolution_confirmation" />
     </fragment>
-    
+
     <dialog
         android:id="@+id/nav_resolution_confirmation"
         android:name="top.jiecs.screener.ui.resolution.ConfirmationDialogFragment"
@@ -28,7 +28,7 @@
     <fragment
         android:id="@id/nav_settings"
         android:name="top.jiecs.screener.ui.settings.SettingsFragment"
-        android:label="@string/settings" >
+        android:label="@string/settings">
         <action
             android:id="@+id/action_nav_settings_to_nav_display_modes"
             app:destination="@id/nav_display_modes" />

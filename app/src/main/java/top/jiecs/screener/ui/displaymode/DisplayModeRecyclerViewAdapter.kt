@@ -33,7 +33,8 @@ class DisplayModeRecyclerViewAdapter(
         holder.displayMode.text = displayMode.toString()
     }
 
-    inner class ViewHolder(binding: FragmentDisplayModeItemBinding) : RecyclerView.ViewHolder(binding.root) {
+    inner class ViewHolder(binding: FragmentDisplayModeItemBinding) :
+        RecyclerView.ViewHolder(binding.root) {
         val displayMode: TextView = binding.displayModeText
     }
 

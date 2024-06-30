@@ -53,6 +53,7 @@ class DisplayModeFragment : Fragment() {
                         // dialog to add a new display mode
                         true
                     }
+
                     else -> false
                 }
             }

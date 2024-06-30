@@ -1,12 +1,12 @@
 <PreferenceScreen xmlns:app="http://schemas.android.com/apk/res-auto">
     <Preference
+        app:fragment="top.jiecs.screener.ui.displaymode.DisplayModeFragment"
         app:key="display_modes"
-        app:title="@string/display_modes"
-        app:fragment="top.jiecs.screener.ui.displaymode.DisplayModeFragment" />
+        app:title="@string/display_modes" />
 
     <PreferenceCategory app:title="@string/quick_settings">
 
-            <SwitchPreferenceCompat
+        <SwitchPreferenceCompat
             app:enabled="false"
             app:key="show_in_notification"
             app:title="@string/show_in_notification" />

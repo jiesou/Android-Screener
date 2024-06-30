@@ -20,9 +20,11 @@ object DisplayModeContent {
     /**
      * A item representing the display mode.
      */
-    data class DisplayMode(val resolutionHeight: Float,
-                           val resolutionWidth: Float,
-                           val dpi: Float) {
+    data class DisplayMode(
+        val resolutionHeight: Float,
+        val resolutionWidth: Float,
+        val dpi: Float
+    ) {
         override fun toString(): String = "${resolutionWidth}x${resolutionHeight} @ ${dpi}dpi"
     }
 }

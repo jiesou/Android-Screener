@@ -2,12 +2,11 @@ package top.jiecs.screener.units
 
 import android.annotation.SuppressLint
 import android.graphics.Point
-import java.lang.reflect.Field
 import android.view.Display
-
 import org.lsposed.hiddenapibypass.HiddenApiBypass
 import rikka.shizuku.ShizukuBinderWrapper
 import rikka.shizuku.SystemServiceHelper
+import java.lang.reflect.Field
 
 class ApiCaller {
     companion object {
@@ -30,8 +29,16 @@ class ApiCaller {
     @SuppressLint("PrivateApi")
     fun fetchUsers(): List<Map<String, Any>> {
         try {
-            val users = HiddenApiBypass.invoke(iUserManager::class.java, iUserManager, "getUsers", true, true, true) as List<*>
-            val userInfoFields = HiddenApiBypass.getInstanceFields(Class.forName("android.content.pm.UserInfo")) as List<Field>
+            val users = HiddenApiBypass.invoke(
+                iUserManager::class.java,
+                iUserManager,
+                "getUsers",
+                true,
+                true,
+                true
+            ) as List<*>
+            val userInfoFields =
+                HiddenApiBypass.getInstanceFields(Class.forName("android.content.pm.UserInfo")) as List<Field>
 
             val idField = userInfoFields.first { it.name == "id" }
             val nameField = userInfoFields.first { it.name == "name" }
@@ -99,16 +106,24 @@ class ApiCaller {
     }
 
     fun applyResolution(height: Int, width: Int, dpi: Int) {
-        HiddenApiBypass.invoke(iWindowManager::class.java, iWindowManager,
-          "setForcedDisplaySize", Display.DEFAULT_DISPLAY, width, height)
-        HiddenApiBypass.invoke(iWindowManager::class.java, iWindowManager,
-          "setForcedDisplayDensityForUser", Display.DEFAULT_DISPLAY, dpi, 0)
+        HiddenApiBypass.invoke(
+            iWindowManager::class.java, iWindowManager,
+            "setForcedDisplaySize", Display.DEFAULT_DISPLAY, width, height
+        )
+        HiddenApiBypass.invoke(
+            iWindowManager::class.java, iWindowManager,
+            "setForcedDisplayDensityForUser", Display.DEFAULT_DISPLAY, dpi, 0
+        )
     }
 
     fun resetResolution() {
-        HiddenApiBypass.invoke(iWindowManager::class.java, iWindowManager,
-          "clearForcedDisplaySize", Display.DEFAULT_DISPLAY)
-        HiddenApiBypass.invoke(iWindowManager::class.java, iWindowManager,
-          "clearForcedDisplayDensityForUser", Display.DEFAULT_DISPLAY, 0)
+        HiddenApiBypass.invoke(
+            iWindowManager::class.java, iWindowManager,
+            "clearForcedDisplaySize", Display.DEFAULT_DISPLAY
+        )
+        HiddenApiBypass.invoke(
+            iWindowManager::class.java, iWindowManager,
+            "clearForcedDisplayDensityForUser", Display.DEFAULT_DISPLAY, 0
+        )
     }
 }

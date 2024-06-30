@@ -8,15 +8,15 @@ plugins {
 android {
     namespace 'top.jiecs.screener'
     compileSdk 34
-    
+
     defaultConfig {
         applicationId "top.jiecs.screener"
         minSdk 28
         targetSdk 34
         versionCode 1
         versionName "1.0"
-        
-        vectorDrawables { 
+
+        vectorDrawables {
             useSupportLibrary true
         }
     }
@@ -35,9 +35,9 @@ android {
 
     buildFeatures {
         viewBinding true
-        
+
     }
-    
+
 }
 
 tasks.withType(KotlinCompile).configureEach {
