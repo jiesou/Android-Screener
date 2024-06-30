@@ -5,11 +5,11 @@ A simple Shizuku tool for easily adjusting screen resolution and frame rate
 
 > I am busy with my studies and have no time to update this app (for now). Contributions welcome
 
-# Screenshots (Preview)
+## Screenshots (Preview)
 
 <img src="https://github.com/jiesou/Android-Screener/assets/84175239/9279a68e-8660-4119-b69a-31bb7b387c41" width="240px" alt="Screener Home Page">
 
-# TODO
+## TODO
 
 - [x] Get Shizuku permissions
 - [x] Basic resolution changing function
@@ -19,6 +19,15 @@ A simple Shizuku tool for easily adjusting screen resolution and frame rate
 - [ ] Automatically calculate dpi and resolution based on scaling
 - [ ] Store display mode, QS switching, etc.
 
-# Download
+## Notice
+
+If you've broken your phone, you can use the `wm` command from your computer ADB to recover it.
+
+```
+adb shell wm size reset
+adb shell wm density reset
+```
+
+## Download
 
 The debug version can currently be downloaded at Github Action
