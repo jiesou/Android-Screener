@@ -30,4 +30,5 @@ adb shell wm density reset
 
 ## Download
 
-The debug version can currently be downloaded at Github Action
+The debug version can currently be downloaded at Github Actions.
+BTW: If the artifacts in Github Actions is expired and cannot be downloaded, you can *fork* this project and rebuild it.
