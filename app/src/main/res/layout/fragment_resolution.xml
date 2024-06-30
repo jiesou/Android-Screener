@@ -23,7 +23,7 @@
         android:layout_height="wrap_content"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/text_resolution" />
+        app:layout_constraintTop_toBottomOf="@id/text_resolution" />
 
     <Button
         android:id="@+id/bt_apply"
@@ -31,7 +31,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="8dp"
         android:text="@string/apply"
-        app:layout_constraintStart_toStartOf="@+id/text_resolution"
+        app:layout_constraintStart_toStartOf="@id/text_resolution"
         app:layout_constraintTop_toBottomOf="@+id/resolution_editor" />
 
     <Button
@@ -41,7 +41,7 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
         android:text="@string/reset"
-        app:layout_constraintStart_toEndOf="@+id/bt_apply"
-        app:layout_constraintTop_toTopOf="@+id/bt_apply" />
+        app:layout_constraintStart_toEndOf="@id/bt_apply"
+        app:layout_constraintTop_toTopOf="@id/bt_apply" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

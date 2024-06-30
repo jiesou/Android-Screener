@@ -45,7 +45,7 @@ class ConfirmationDialogFragment : DialogFragment() {
 
             negativeButton.setOnClickListener {
                 confirmCountdownJob.value?.cancel()
-                apiCaller.resetResolution(0)
+                apiCaller.resetResolution()
                 negativeButton.text =
                     getString(R.string.undo_changes, getString(R.string.undone))
             }

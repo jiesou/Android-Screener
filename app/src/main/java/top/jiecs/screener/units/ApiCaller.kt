@@ -96,17 +96,17 @@ class ApiCaller {
         return emptyMap()
     }
 
-    fun applyResolution(height: Int, width: Int, dpi: Int, userId: Int) {
+    fun applyResolution(height: Int, width: Int, dpi: Int) {
         HiddenApiBypass.invoke(iWindowManager::class.java, iWindowManager,
           "setForcedDisplaySize", Display.DEFAULT_DISPLAY, width, height)
         HiddenApiBypass.invoke(iWindowManager::class.java, iWindowManager,
-          "setForcedDisplayDensityForUser", Display.DEFAULT_DISPLAY, dpi, userId)
+          "setForcedDisplayDensityForUser", Display.DEFAULT_DISPLAY, dpi, 0)
     }
 
-    fun resetResolution(userId: Int) {
+    fun resetResolution() {
         HiddenApiBypass.invoke(iWindowManager::class.java, iWindowManager,
           "clearForcedDisplaySize", Display.DEFAULT_DISPLAY)
         HiddenApiBypass.invoke(iWindowManager::class.java, iWindowManager,
-          "clearForcedDisplayDensityForUser", Display.DEFAULT_DISPLAY, userId)
+          "clearForcedDisplayDensityForUser", Display.DEFAULT_DISPLAY, 0)
     }
 }

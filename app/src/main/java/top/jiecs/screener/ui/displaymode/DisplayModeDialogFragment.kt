@@ -20,7 +20,7 @@ class DisplayModeDialogFragment : DialogFragment() {
             .setPositiveButton(getString(R.string.looks_fine), null)
             .setNegativeButton(getString(R.string.undo_changes)) { _: DialogInterface, _: Int ->
                 val apiCaller = ApiCaller()
-                apiCaller.resetResolution(0)
+                apiCaller.resetResolution()
             }
             .create()
         return dialog

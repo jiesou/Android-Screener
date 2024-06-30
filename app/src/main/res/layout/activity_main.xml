@@ -23,7 +23,7 @@
              app:layout_constraintLeft_toLeftOf="parent"
              app:layout_constraintRight_toRightOf="parent" />
 
-        <fragment
+        <androidx.fragment.app.FragmentContainerView
              android:layout_height="match_parent"
              android:layout_width="match_parent"
              app:layout_constraintTop_toTopOf="parent"
