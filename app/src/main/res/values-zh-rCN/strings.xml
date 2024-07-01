@@ -17,5 +17,13 @@
     <string name="looks_fine">看着不错</string>
     <string name="undo_changes">撤销更改（%1$s）</string>
     <string name="undone">已撤销</string>
+    <string name="show_in_qs_panel_only_first_two_summary">QS 面板中，仅切换前两个显示模式</string>
+    <string name="show_in_qs_panel_only_first_two">仅前两个模式</string>
+    <string name="show_in_qs_panel">在 QS 面板中显示</string>
+    <string name="quick_settings">快速设置</string>
+    <string name="show_in_notification">在通知面板中显示</string>
+    <string name="new_display_mode">新建显示模式</string>
+    <string name="display_modes">显示模式</string>
+    <string name="edit">编辑</string>
 
 </resources>

@@ -21,6 +21,7 @@
     <string name="looks_fine">Looks Fine</string>
     <string name="undo_changes">Undo Changes (%1$s)</string>
     <string name="undone">Undone</string>
+    <string name="edit">Edit</string>
 
     <!-- Settings -->
     <string name="display_modes">Display Modes</string>
