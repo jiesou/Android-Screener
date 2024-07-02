@@ -8,13 +8,7 @@
         android:id="@id/nav_resolution"
         android:name="top.jiecs.screener.ui.resolution.ResolutionFragment"
         android:label="@string/resolution"
-        tools:layout="@layout/dialog_resolution_content" />
-
-    <dialog
-        android:id="@+id/nav_resolution_dialog"
-        android:name="top.jiecs.screener.ui.resolution.ResolutionDialogFragment"
-        android:label="@string/resolution" />
-
+        tools:layout="@layout/fragment_resolution" />
     <dialog
         android:id="@+id/nav_resolution_confirmation"
         android:name="top.jiecs.screener.ui.resolution.ConfirmationDialogFragment"
@@ -30,9 +24,6 @@
         android:id="@id/nav_settings"
         android:name="top.jiecs.screener.ui.settings.SettingsFragment"
         android:label="@string/settings">
-        <action
-            android:id="@+id/action_nav_settings_to_nav_display_modes"
-            app:destination="@id/nav_display_modes" />
     </fragment>
 
     <fragment

@@ -3,20 +3,51 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
+    android:layout_height="wrap_content"
     tools:context=".ui.resolution.ResolutionFragment">
 
     <TextView
         android:id="@+id/text_resolution"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="8dp"
-        android:layout_marginEnd="8dp"
-        android:textAlignment="center"
-        android:textSize="20sp"
-        app:layout_constraintBottom_toBottomOf="parent"
+        android:layout_marginStart="@dimen/activity_horizontal_margin"
+        android:layout_marginTop="@dimen/activity_vertical_margin"
+        android:layout_marginEnd="@dimen/activity_horizontal_margin"
+        android:textSize="@dimen/text_size"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"
+        tools:text="@string/resolution" />
+
+    <include
+        android:id="@+id/resolution_editor"
+        layout="@layout/resolution_editor"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/activity_vertical_margin"
+        app:layout_constraintEnd_toEndOf="@id/text_resolution"
+        app:layout_constraintStart_toStartOf="@id/text_resolution"
+        app:layout_constraintTop_toBottomOf="@id/text_resolution" />
+
+    <Button
+        android:id="@+id/bt_apply"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:layout_marginBottom="@dimen/activity_vertical_margin"
+        android:text="@string/apply"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="@id/text_resolution"
+        app:layout_constraintTop_toBottomOf="@id/resolution_editor"/>
+
+    <Button
+        android:id="@+id/bt_reset"
+        style="?attr/materialButtonOutlinedStyle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:text="@string/reset"
+        app:layout_constraintStart_toEndOf="@id/bt_apply"
+        app:layout_constraintTop_toTopOf="@id/bt_apply" />
+
 </androidx.constraintlayout.widget.ConstraintLayout>
