@@ -3,13 +3,13 @@ package top.jiecs.screener.ui.resolution
 import android.app.Dialog
 import android.content.DialogInterface
 import android.os.Bundle
+import android.widget.Button
 import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.DialogFragment
-import androidx.lifecycle.MutableLiveData
+import androidx.fragment.app.viewModels
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import top.jiecs.screener.R
@@ -19,6 +19,9 @@ class ConfirmationDialogFragment : DialogFragment() {
 
     private lateinit var apiCaller: ApiCaller
     private lateinit var dialog: AlertDialog
+    private lateinit var negativeButton: Button
+
+    private val confirmationDialogViewModel: ConfirmationDialogViewModel by viewModels()
 
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
         isCancelable = false
@@ -31,41 +34,40 @@ class ConfirmationDialogFragment : DialogFragment() {
         apiCaller = ApiCaller()
 
         dialog.setOnShowListener {
-            val negativeButton = dialog.getButton(DialogInterface.BUTTON_NEGATIVE)
-
-            confirmCountdown.observe(this) {
-                negativeButton.text = getString(R.string.undo_changes, "${it}s")
-            }
-            startConfirmCountdownTo {
-                if (isAdded && dialog.isShowing) {
-                    negativeButton.performClick()
-                }
-            }
+            negativeButton = dialog.getButton(DialogInterface.BUTTON_NEGATIVE)
 
             negativeButton.setOnClickListener {
-                confirmCountdownJob.value?.cancel()
+                negativeButton.text = getString(R.string.undo_changes, getString(R.string.undone))
                 apiCaller.resetResolution()
-                negativeButton.text =
-                    getString(R.string.undo_changes, getString(R.string.undone))
+            }
+
+            if (confirmationDialogViewModel.confirmCountdownJob == null) {
+                startConfirmCountdown()
+            } else {
+                confirmationDialogViewModel.confirmCountdown.postValue(0)
             }
         }
+
+        confirmationDialogViewModel.confirmCountdown.observe(this) {
+            if (!::negativeButton.isInitialized) return@observe
+            if (it == 0) {
+                confirmationDialogViewModel.confirmCountdownJob?.cancel()
+                negativeButton.performClick()
+            } else {
+                negativeButton.text = getString(R.string.undo_changes, "${it}s")
+            }
+        }
+
         return dialog
     }
 
-    private val confirmCountdown: MutableLiveData<Int> by lazy {
-        MutableLiveData<Int>()
-    }
-    private val confirmCountdownJob: MutableLiveData<Job> by lazy {
-        MutableLiveData<Job>()
-    }
-
-    private fun startConfirmCountdownTo(callback: () -> Unit) {
-        confirmCountdownJob.value = CoroutineScope(Dispatchers.Main).launch {
-            for (countdown in 3 downTo 0) {
-                confirmCountdown.postValue(countdown)
-                delay(1000)
+    private fun startConfirmCountdown() {
+        confirmationDialogViewModel.confirmCountdownJob =
+            CoroutineScope(Dispatchers.Main).launch {
+                for (countdown in 3 downTo 0) {
+                    confirmationDialogViewModel.confirmCountdown.postValue(countdown)
+                    delay(1000)
+                }
             }
-            callback()
-        }
     }
 }
