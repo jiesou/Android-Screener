@@ -13,6 +13,7 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.Lifecycle
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import top.jiecs.screener.R
 
 /**
@@ -50,7 +51,19 @@ class DisplayModeFragment : Fragment() {
                 // Handle the menu selection
                 return when (menuItem.itemId) {
                     R.id.new_display_mode -> {
-                        // dialog to add a new display mode
+                        // create dialog to add a new display mode with custom layout
+                        context?.let {
+                            MaterialAlertDialogBuilder(it)
+                                .setTitle(R.string.new_display_mode)
+                                .setView(R.layout.dialog_resolution_content)
+                                .setPositiveButton(R.string.apply) { _, _ ->
+                                    // Respond to positive button press
+                                }
+                                .setNegativeButton(R.string.cancel) { _, _ ->
+                                    // Respond to negative button press
+                                }
+                                .show()
+                        }
                         true
                     }
 

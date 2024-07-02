@@ -8,11 +8,19 @@
         android:id="@id/nav_resolution"
         android:name="top.jiecs.screener.ui.resolution.ResolutionFragment"
         android:label="@string/resolution"
-        tools:layout="@layout/fragment_resolution">
+        tools:layout="@layout/dialog_resolution_content">
         <action
             android:id="@+id/action_nav_resolution_to_nav_resolution_confirmation"
             app:destination="@id/nav_resolution_confirmation" />
+        <action
+            android:id="@+id/action_nav_resolution_to_nav_resolution_dialog"
+            app:destination="@id/nav_resolution_dialog" />
     </fragment>
+
+    <dialog
+        android:id="@+id/nav_resolution_dialog"
+        android:name="top.jiecs.screener.ui.resolution.ResolutionDialogFragment"
+        android:label="@string/resolution" />
 
     <dialog
         android:id="@+id/nav_resolution_confirmation"
