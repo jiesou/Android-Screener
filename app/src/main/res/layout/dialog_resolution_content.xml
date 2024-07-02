@@ -3,7 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
+    android:layout_height="wrap_content"
     tools:context=".ui.resolution.ResolutionFragment">
 
     <TextView
@@ -34,9 +34,11 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="8dp"
+        android:layout_marginBottom="@dimen/activity_vertical_margin"
         android:text="@string/apply"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="@id/text_resolution"
-        app:layout_constraintTop_toBottomOf="@+id/resolution_editor" />
+        app:layout_constraintTop_toBottomOf="@id/resolution_editor"/>
 
     <Button
         android:id="@+id/bt_reset"
