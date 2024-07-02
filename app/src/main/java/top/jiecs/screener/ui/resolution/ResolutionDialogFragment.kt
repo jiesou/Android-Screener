@@ -45,24 +45,19 @@ class ResolutionDialogFragment : DialogFragment() {
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
         _binding = DialogResolutionContentBinding.inflate(LayoutInflater.from(context))
 
-        return MaterialAlertDialogBuilder(requireContext())
+        val dialog = MaterialAlertDialogBuilder(requireContext())
             .setView(binding.root)
             .create()
-    }
-
-
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
 
         apiCaller = ApiCaller()
 
-        mainViewModel.shizukuPermissionGranted.observe(viewLifecycleOwner) {
+        mainViewModel.shizukuPermissionGranted.observe(this) {
             if (it) {
                 resolutionViewModel.fetchScreenResolution()
             }
         }
 
-        resolutionViewModel.physicalResolutionMap.observe(viewLifecycleOwner) {
+        resolutionViewModel.physicalResolutionMap.observe(this) {
             binding.textResolution.text = "Physical ${it?.get("height").toString()}x${
                 it?.get("width").toString()
             }; DPI ${it?.get("dpi").toString()}"
@@ -70,13 +65,13 @@ class ResolutionDialogFragment : DialogFragment() {
         val textHeight = binding.resolutionEditor.textHeight.editText!!
         val textWidth = binding.resolutionEditor.textWidth.editText!!
         val textDpi = binding.resolutionEditor.textDpi.editText!!
-        resolutionViewModel.resolutionMap.observe(viewLifecycleOwner) {
+        resolutionViewModel.resolutionMap.observe(this) {
             textHeight.setText(it?.get("height")?.toInt()?.toString())
             textWidth.setText(it?.get("width")?.toInt()?.toString())
             textDpi.setText(it?.get("dpi")?.toInt()?.toString())
         }
         val chipGroup = binding.resolutionEditor.chipGroup
-        resolutionViewModel.usersList.observe(viewLifecycleOwner) {
+        resolutionViewModel.usersList.observe(this) {
             if (it.isEmpty()) return@observe
             // for each user, create a chip to chip group
             chipGroup.removeAllViews()
@@ -133,6 +128,8 @@ class ResolutionDialogFragment : DialogFragment() {
         binding.btReset.setOnClickListener {
             apiCaller.resetResolution()
         }
+
+        return dialog
     }
 
     private fun updateDpiEditorOrScaleSlider(scaleValue: Int?) {
