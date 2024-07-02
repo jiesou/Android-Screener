@@ -4,8 +4,9 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.TextView
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.viewModels
+import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import top.jiecs.screener.R
@@ -20,14 +21,13 @@ class ResolutionFragment : Fragment() {
     // onDestroyView.
     private val binding get() = _binding!!
 
+    private val resolutionViewModel: ResolutionViewModel by viewModels()
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        val resolutionViewModel =
-            ViewModelProvider(this)[ResolutionViewModel::class.java]
-
         _binding = FragmentResolutionBinding.inflate(inflater, container, false)
         val root: View = binding.root
 
@@ -36,10 +36,17 @@ class ResolutionFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        if (resolutionViewModel.isResolutionDialogShown) {
+            return
+        }
         // nav to ResolutionDialogFragment
         val navController = findNavController()
-        navController.navigate(R.id.action_nav_resolution_to_nav_resolution_dialog)
-
+        navController.navigate(R.id.nav_resolution_dialog)
+        resolutionViewModel.isResolutionDialogShown = true
     }
 
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
+    }
 }

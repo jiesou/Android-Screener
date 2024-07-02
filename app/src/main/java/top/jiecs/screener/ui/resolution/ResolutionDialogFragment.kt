@@ -5,13 +5,11 @@ import android.os.Bundle
 import android.text.Editable
 import android.view.LayoutInflater
 import android.view.View
-import android.view.ViewGroup
 import androidx.core.widget.doAfterTextChanged
 import androidx.fragment.app.DialogFragment
-import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
-import androidx.navigation.findNavController
+import androidx.navigation.fragment.NavHostFragment
 import com.google.android.material.chip.Chip
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import top.jiecs.screener.MainViewModel
@@ -31,7 +29,7 @@ class ResolutionDialogFragment : DialogFragment() {
     // onDestroyView.
     private val binding get() = _binding!!
 
-    private val resolutionViewModel: ResolutionViewModel by viewModels()
+    private val resolutionDialogViewModel: ResolutionDialogViewModel by viewModels()
     private val mainViewModel by activityViewModels<MainViewModel>()
 
     private lateinit var apiCaller: ApiCaller
@@ -53,11 +51,11 @@ class ResolutionDialogFragment : DialogFragment() {
 
         mainViewModel.shizukuPermissionGranted.observe(this) {
             if (it) {
-                resolutionViewModel.fetchScreenResolution()
+                resolutionDialogViewModel.fetchScreenResolution()
             }
         }
 
-        resolutionViewModel.physicalResolutionMap.observe(this) {
+        resolutionDialogViewModel.physicalResolutionMap.observe(this) {
             binding.textResolution.text = "Physical ${it?.get("height").toString()}x${
                 it?.get("width").toString()
             }; DPI ${it?.get("dpi").toString()}"
@@ -65,13 +63,13 @@ class ResolutionDialogFragment : DialogFragment() {
         val textHeight = binding.resolutionEditor.textHeight.editText!!
         val textWidth = binding.resolutionEditor.textWidth.editText!!
         val textDpi = binding.resolutionEditor.textDpi.editText!!
-        resolutionViewModel.resolutionMap.observe(this) {
+        resolutionDialogViewModel.resolutionMap.observe(this) {
             textHeight.setText(it?.get("height")?.toInt()?.toString())
             textWidth.setText(it?.get("width")?.toInt()?.toString())
             textDpi.setText(it?.get("dpi")?.toInt()?.toString())
         }
         val chipGroup = binding.resolutionEditor.chipGroup
-        resolutionViewModel.usersList.observe(this) {
+        resolutionDialogViewModel.usersList.observe(this) {
             if (it.isEmpty()) return@observe
             // for each user, create a chip to chip group
             chipGroup.removeAllViews()
@@ -96,7 +94,7 @@ class ResolutionDialogFragment : DialogFragment() {
             // auto calculate the other dimension when one dimension is changed
             if (s.isNullOrBlank()) return@doAfterTextChanged
             val physical =
-                resolutionViewModel.physicalResolutionMap.value ?: return@doAfterTextChanged
+                resolutionDialogViewModel.physicalResolutionMap.value ?: return@doAfterTextChanged
             val aspectRatio = physical["height"]!! / physical["width"]!!
 
             when (s.hashCode()) {
@@ -122,8 +120,8 @@ class ResolutionDialogFragment : DialogFragment() {
                 textWidth.text.toString().toInt(),
                 textDpi.text.toString().toInt()
             )
-            val navController = v?.findNavController()
-            navController?.navigate(R.id.action_nav_resolution_to_nav_resolution_confirmation)
+            val navController = NavHostFragment.findNavController(this)
+            navController.navigate(R.id.nav_resolution_confirmation)
         }
         binding.btReset.setOnClickListener {
             apiCaller.resetResolution()
@@ -137,7 +135,7 @@ class ResolutionDialogFragment : DialogFragment() {
             binding.resolutionEditor.textHeight.editText!!.text.toString().toFloatOrNull() ?: return
         val scaledWidth =
             binding.resolutionEditor.textWidth.editText!!.text.toString().toFloatOrNull() ?: return
-        val physical = resolutionViewModel.physicalResolutionMap.value ?: return
+        val physical = resolutionDialogViewModel.physicalResolutionMap.value ?: return
 
         // Calculate the DPI that keeps the display size proportionally scaled
         // Get the ratio of virtual to physical resolution diagonal (pythagorean theorem)
