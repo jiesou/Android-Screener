@@ -10,6 +10,7 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
 import androidx.navigation.findNavController
+import androidx.navigation.fragment.findNavController
 import com.google.android.material.chip.Chip
 import top.jiecs.screener.MainViewModel
 import top.jiecs.screener.R
@@ -124,8 +125,8 @@ class ResolutionFragment : Fragment() {
                 textWidth.text.toString().toInt(),
                 textDpi.text.toString().toInt()
             )
-            val navController = v?.findNavController()
-            navController?.navigate(R.id.nav_resolution_confirmation)
+            val navController = findNavController()
+            navController.navigate(R.id.nav_resolution_confirmation)
         }
         binding.btReset.setOnClickListener {
             apiCaller.resetResolution()
