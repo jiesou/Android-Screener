@@ -9,6 +9,7 @@
         android:name="top.jiecs.screener.ui.resolution.ResolutionFragment"
         android:label="@string/resolution"
         tools:layout="@layout/fragment_resolution" />
+
     <dialog
         android:id="@+id/nav_resolution_confirmation"
         android:name="top.jiecs.screener.ui.resolution.ConfirmationDialogFragment"
@@ -23,12 +24,17 @@
     <fragment
         android:id="@id/nav_settings"
         android:name="top.jiecs.screener.ui.settings.SettingsFragment"
-        android:label="@string/settings">
-    </fragment>
+        android:label="@string/settings" />
 
     <fragment
         android:id="@+id/nav_display_modes"
         android:name="top.jiecs.screener.ui.displaymode.DisplayModeFragment"
         android:label="@string/display_modes"
         tools:layout="@layout/fragment_display_mode" />
+
+    <dialog
+        android:id="@+id/nav_display_mode_set"
+        android:name="top.jiecs.screener.ui.displaymode.DisplayModeSetDialogFragment"
+        android:label="@string/confirmation_dialog" />
+
 </navigation>
