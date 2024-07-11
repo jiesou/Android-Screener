@@ -4,6 +4,8 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import top.jiecs.screener.units.ApiCaller
 
+import top.jiecs.screener.units.ApiCaller
+
 class ResolutionViewModel : ViewModel() {
 
     val physicalResolutionMap: MutableLiveData<Map<String, Float>?> by lazy {

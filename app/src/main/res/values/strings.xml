@@ -23,6 +23,7 @@
     <string name="undo_changes">Undo Changes (%1$s)</string>
     <string name="undone">Undone</string>
     <string name="edit">Edit</string>
+    <string name="invalid">Invalid</string>
 
     <!-- Settings -->
     <string name="display_modes">Display Modes</string>

@@ -14,7 +14,6 @@ import androidx.lifecycle.Lifecycle
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import top.jiecs.screener.R
 
 /**
@@ -52,8 +51,7 @@ class DisplayModeFragment : Fragment() {
                 // Handle the menu selection
                 return when (menuItem.itemId) {
                     R.id.new_display_mode -> {
-                        val navController = findNavController()
-                        navController.navigate(R.id.nav_display_mode_set)
+                        findNavController().navigate(R.id.nav_display_mode_set)
                         true
                     }
 
