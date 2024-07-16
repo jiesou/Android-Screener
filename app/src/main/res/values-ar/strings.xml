@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name" translatable="false">Screener</string>
+    <string name="resolution">الدقة</string>
+    <string name="frame_rate">معدل الإطارات</string>
+    <string name="settings">الإعدادات</string>
+    <string name="shizuku_not_available">Shizuku غير متاح</string>
+    <string name="shizuku_permission_granted">تم منح إذن Shizuku</string>
+    <string name="shizuku_permission_granted_action" translatable="false">top.jiecs.screener.SHIZUKU_PERMISSION_GRANTED</string>
+
+    <!-- Resolution -->
+    <string name="height">الارتفاع</string>
+    <string name="width">العرض</string>
+    <string name="dpi">كثافة النقاط (DPI)</string>
+    <string name="scale">مقياس</string>
+    <string name="apply">تطبيق</string>
+    <string name="cancel">إلغاء</string>
+    <string name="reset">إعادة تعيين</string>
+    <string name="success">نجاح</string>
+    <string name="confirmation_dialog">مربع التأكيد</string>
+    <string name="reset_hint">إذا كنت ترغب في التراجع عن التغييرات، انتظر 10 ثوانٍ للمتابعة.</string>
+    <string name="looks_fine">يبدو جيداً</string>
+    <string name="undo_changes">تراجع عن التغييرات (%1$s)</string>
+    <string name="undone">تم التراجع</string>
+    <string name="edit">تعديل</string>
+
+    <!-- Settings -->
+    <string name="display_modes">أنماط العرض</string>
+    <string name="new_display_mode">نمط عرض جديد</string>
+    <string name="quick_settings">الإعدادات السريعة</string>
+    <string name="show_in_notification">إظهار في الإشعارات</string>
+    <string name="show_in_qs_panel">إظهار في لوحة الإعدادات السريعة</string>
+    <string name="show_in_qs_panel_only_first_two">فقط الأولين</string>
+    <string name="show_in_qs_panel_only_first_two_summary">قم فقط بتبديل أول نمطي عرض في لوحة الإعدادات السريعة</string>
+
+</resources>
