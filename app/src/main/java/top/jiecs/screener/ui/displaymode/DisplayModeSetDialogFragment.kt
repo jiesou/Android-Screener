@@ -2,20 +2,25 @@ package top.jiecs.screener.ui.displaymode
 
 import android.app.Dialog
 import android.os.Bundle
+import android.view.LayoutInflater
 import androidx.fragment.app.DialogFragment
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import top.jiecs.screener.R
+import top.jiecs.screener.databinding.DialogDisplayModeSetBinding
 import top.jiecs.screener.databinding.FragmentResolutionBinding
+import top.jiecs.screener.ui.resolution.ResolutionFragment
 
 class DisplayModeSetDialogFragment : DialogFragment() {
 
-    private var _binding: FragmentResolutionBinding? = null
+    private var _binding: DialogDisplayModeSetBinding? = null
     private val binding get() = _binding!!
 
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
+        _binding = DialogDisplayModeSetBinding.inflate(LayoutInflater.from(context))
+
         return MaterialAlertDialogBuilder(requireContext())
             .setTitle(getString(R.string.new_display_mode))
-            .setView(R.layout.dialog_display_mode_set)
+            .setView(binding.root)
             .setPositiveButton(R.string.apply) { _, _ ->
                 // Respond to positive button press
                 newDisplayMode()
@@ -25,10 +30,12 @@ class DisplayModeSetDialogFragment : DialogFragment() {
     }
 
     private fun newDisplayMode() {
+        val resolutionFragment = binding.resolutionFragment.getFragment<ResolutionFragment>()
+
         val displayMode = DisplayModeContent.DisplayMode(
-            binding.resolutionEditor.textHeight.editText.toString().toFloat(),
-            binding.resolutionEditor.textWidth.editText.toString().toFloat(),
-            binding.resolutionEditor.textDpi.editText.toString().toFloat()
+            resolutionFragment.binding.resolutionEditor.textHeight.editText?.text.toString().toFloat(),
+            resolutionFragment.binding.resolutionEditor.textWidth.editText?.text.toString().toFloat(),
+            resolutionFragment.binding.resolutionEditor.textDpi.editText?.text.toString().toFloat()
         )
         DisplayModeContent.DISPLAY_MODES.add(displayMode)
     }
