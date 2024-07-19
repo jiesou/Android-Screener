@@ -10,7 +10,6 @@ import kotlinx.serialization.properties.Properties
 import kotlinx.serialization.properties.decodeFromStringMap
 import kotlinx.serialization.properties.encodeToStringMap
 import top.jiecs.screener.ui.displaymode.DisplayModeContent.DisplayMode
-import top.jiecs.screener.ui.displaymode.DisplayModeList
 
 val Context.dataStore by preferencesDataStore(name = "display_modes")
 
@@ -24,6 +23,22 @@ class DataStoreManager(private val context: Context) {
                 map.forEach { (strKey, strValue) ->
                     val key = stringPreferencesKey(strKey)
                     preferences[key] = strValue
+                }
+            }
+        }
+    }
+
+    @OptIn(ExperimentalSerializationApi::class)
+    fun removeDisplayMode(displayMode: DisplayMode) {
+        runBlocking {
+            context.dataStore.edit { preferences ->
+                // Serialize the displayMode to get its key-value representation
+                val mapToRemove = Properties.encodeToStringMap(displayMode)
+
+                // Iterate over the keys of the mapToRemove and remove them from preferences
+                mapToRemove.keys.forEach { strKey ->
+                    val key = stringPreferencesKey(strKey)
+                    preferences.remove(key)
                 }
             }
         }

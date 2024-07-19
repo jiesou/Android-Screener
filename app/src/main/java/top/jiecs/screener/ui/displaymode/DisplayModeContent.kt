@@ -5,6 +5,7 @@ import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import kotlinx.serialization.Serializable
 import top.jiecs.screener.MyApplication
+import top.jiecs.screener.ui.displaymode.DisplayModeContent.adapter
 
 /**
  * Helper class for providing display modes for user interfaces.
@@ -15,6 +16,8 @@ object DisplayModeContent {
      */
     val DISPLAY_MODES: DisplayModeList = DisplayModeList()
 
+    var adapter: DisplayModeRecyclerViewAdapter? = null
+
     init {
         GlobalScope.launch {
             val displayModesFromDataStore = DataStoreManager(MyApplication.context).readDisplayModes().toMutableList()
@@ -23,9 +26,9 @@ object DisplayModeContent {
             DISPLAY_MODES.addAll(displayModesFromDataStore)
         }
         // Add some sample items.
-        DISPLAY_MODES.add(DisplayMode(3200f, 1440f, 560f))
-        DISPLAY_MODES.add(DisplayMode(2400f, 1080f, 480f))
-        DISPLAY_MODES.add(DisplayMode(1600f, 720f, 280f))
+//        DISPLAY_MODES.add(DisplayMode(3200f, 1440f, 560f))
+//        DISPLAY_MODES.add(DisplayMode(2400f, 1080f, 480f))
+//        DISPLAY_MODES.add(DisplayMode(1600f, 720f, 280f))
     }
 
     /**
@@ -48,6 +51,16 @@ class DisplayModeList(private val list: MutableList<DisplayModeContent.DisplayMo
         val returnValue = list.add(element)
         if (returnValue) {
             DataStoreManager(MyApplication.context).saveDisplayModes(list)
+            adapter?.notifyDataSetChanged()
+        }
+        return returnValue
+    }
+    override fun remove(element: DisplayModeContent.DisplayMode): Boolean {
+        // override remove function for custom logic
+        val returnValue = list.remove(element)
+        if (returnValue) {
+            DataStoreManager(MyApplication.context).removeDisplayMode(element)
+            adapter?.notifyDataSetChanged()
         }
         return returnValue
     }

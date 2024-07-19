@@ -7,7 +7,7 @@ import androidx.fragment.app.DialogFragment
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import top.jiecs.screener.R
 import top.jiecs.screener.databinding.DialogDisplayModeSetBinding
-import top.jiecs.screener.databinding.FragmentResolutionBinding
+import top.jiecs.screener.ui.displaymode.DisplayModeContent.DISPLAY_MODES
 import top.jiecs.screener.ui.resolution.ResolutionFragment
 
 class DisplayModeSetDialogFragment : DialogFragment() {
@@ -33,10 +33,12 @@ class DisplayModeSetDialogFragment : DialogFragment() {
         val resolutionFragment = binding.resolutionFragment.getFragment<ResolutionFragment>()
 
         val displayMode = DisplayModeContent.DisplayMode(
-            resolutionFragment.binding.resolutionEditor.textHeight.editText?.text.toString().toFloat(),
-            resolutionFragment.binding.resolutionEditor.textWidth.editText?.text.toString().toFloat(),
+            resolutionFragment.binding.resolutionEditor.textHeight.editText?.text.toString()
+                .toFloat(),
+            resolutionFragment.binding.resolutionEditor.textWidth.editText?.text.toString()
+                .toFloat(),
             resolutionFragment.binding.resolutionEditor.textDpi.editText?.text.toString().toFloat()
         )
-        DisplayModeContent.DISPLAY_MODES.add(displayMode)
+        DISPLAY_MODES.add(displayMode)
     }
 }

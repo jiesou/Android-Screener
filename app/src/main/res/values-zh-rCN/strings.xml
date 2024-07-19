@@ -26,6 +26,7 @@
     <string name="new_display_mode">新建显示模式</string>
     <string name="display_modes">显示模式</string>
     <string name="edit">编辑</string>
+    <string name="remove">移除</string>
     <string name="invalid">无效</string>
 
 </resources>

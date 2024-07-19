@@ -32,6 +32,7 @@ class DisplayModeFragment : Fragment() {
                 layoutManager = LinearLayoutManager(context)
                 adapter = DisplayModeRecyclerViewAdapter(DisplayModeContent.DISPLAY_MODES)
             }
+            DisplayModeContent.adapter = view.adapter as DisplayModeRecyclerViewAdapter
         }
 
         // The usage of an interface lets you inject your own implementation
