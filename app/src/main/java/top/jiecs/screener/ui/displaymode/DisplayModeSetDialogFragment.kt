@@ -4,16 +4,24 @@ import android.app.Dialog
 import android.os.Bundle
 import android.view.LayoutInflater
 import androidx.fragment.app.DialogFragment
+import androidx.fragment.app.Fragment
+import androidx.fragment.app.viewModels
+import androidx.lifecycle.lifecycleScope
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
+import kotlinx.coroutines.launch
 import top.jiecs.screener.R
 import top.jiecs.screener.databinding.DialogDisplayModeSetBinding
-import top.jiecs.screener.ui.displaymode.DisplayModeContent.DISPLAY_MODES
 import top.jiecs.screener.ui.resolution.ResolutionFragment
 
 class DisplayModeSetDialogFragment : DialogFragment() {
 
     private var _binding: DialogDisplayModeSetBinding? = null
     private val binding get() = _binding!!
+
+    // tks: https://stackoverflow.com/a/70644415/20267613
+    private val displayModeFragment: Fragment?
+        get() = requireParentFragment().childFragmentManager.fragments[0]
+    private val displayModeViewModel: DisplayModeViewModel by viewModels({ displayModeFragment!! })
 
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
         _binding = DialogDisplayModeSetBinding.inflate(LayoutInflater.from(context))
@@ -32,13 +40,16 @@ class DisplayModeSetDialogFragment : DialogFragment() {
     private fun newDisplayMode() {
         val resolutionFragment = binding.resolutionFragment.getFragment<ResolutionFragment>()
 
-        val displayMode = DisplayModeContent.DisplayMode(
+        val displayMode = DisplayModeViewModel.DisplayMode(
             resolutionFragment.binding.resolutionEditor.textHeight.editText?.text.toString()
                 .toFloat(),
             resolutionFragment.binding.resolutionEditor.textWidth.editText?.text.toString()
                 .toFloat(),
             resolutionFragment.binding.resolutionEditor.textDpi.editText?.text.toString().toFloat()
         )
-        DISPLAY_MODES.add(displayMode)
+        displayModeViewModel.list.value?.add(displayMode)
+        lifecycleScope.launch {
+            DataStoreManager().save(displayModeViewModel.list.value!!)
+        }
     }
 }

@@ -1,56 +1,33 @@
+package top.jiecs.screener.ui.displaymode
+
 import android.content.Context
 import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.core.stringPreferencesKey
 import androidx.datastore.preferences.preferencesDataStore
-import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
-import kotlinx.coroutines.runBlocking
-import kotlinx.serialization.ExperimentalSerializationApi
-import kotlinx.serialization.properties.Properties
-import kotlinx.serialization.properties.decodeFromStringMap
-import kotlinx.serialization.properties.encodeToStringMap
-import top.jiecs.screener.ui.displaymode.DisplayModeContent.DisplayMode
+import kotlinx.serialization.decodeFromString
+import kotlinx.serialization.encodeToString
+import kotlinx.serialization.json.Json
+import top.jiecs.screener.MyApplication
+import top.jiecs.screener.ui.displaymode.DisplayModeViewModel.DisplayMode
 
-val Context.dataStore by preferencesDataStore(name = "display_modes")
+val Context.dataStore by preferencesDataStore("display_modes")
+val displayModesKey = stringPreferencesKey("display_modes")
 
-class DataStoreManager(private val context: Context) {
+class DataStoreManager(private val context: Context = MyApplication.context) {
 
-    @OptIn(ExperimentalSerializationApi::class)
-    fun saveDisplayModes(modes: List<DisplayMode>) {
-        runBlocking {
-            context.dataStore.edit { preferences ->
-                val map = Properties.encodeToStringMap(modes)
-                map.forEach { (strKey, strValue) ->
-                    val key = stringPreferencesKey(strKey)
-                    preferences[key] = strValue
-                }
-            }
+    suspend fun save(modes: MutableList<DisplayMode>) {
+        context.dataStore.edit { preferences ->
+            preferences[displayModesKey] = Json.encodeToString(modes)
         }
     }
 
-    @OptIn(ExperimentalSerializationApi::class)
-    fun removeDisplayMode(displayMode: DisplayMode) {
-        runBlocking {
-            context.dataStore.edit { preferences ->
-                // Serialize the displayMode to get its key-value representation
-                val mapToRemove = Properties.encodeToStringMap(displayMode)
-
-                // Iterate over the keys of the mapToRemove and remove them from preferences
-                mapToRemove.keys.forEach { strKey ->
-                    val key = stringPreferencesKey(strKey)
-                    preferences.remove(key)
-                }
-            }
-        }
-    }
-
-    @OptIn(ExperimentalSerializationApi::class)
-    suspend fun readDisplayModes(): List<DisplayMode> {
+    fun read(): Flow<MutableList<DisplayMode>> {
         return context.dataStore.data.map { preferences ->
-            val stringMap = preferences.asMap().entries.associate {
-                it.key.name to it.value.toString()
-            }
-            Properties.decodeFromStringMap<List<DisplayMode>>(stringMap)
-        }.first()
+            preferences[displayModesKey]?.let {
+                Json.decodeFromString<MutableList<DisplayMode>>(it)
+            } ?: mutableListOf()
+        }
     }
 }
