@@ -32,7 +32,8 @@ class DisplayModeViewModel : ViewModel() {
         val resolutionWidth: Float,
         val dpi: Float
     ) {
-        override fun toString(): String = "${resolutionWidth}x${resolutionHeight} @ ${dpi}dpi"
+        override fun toString(): String =
+            "${resolutionWidth.toInt()}x${resolutionHeight.toInt()} @ ${dpi.toInt()}dpi"
     }
 
 }

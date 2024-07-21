@@ -78,9 +78,8 @@ class ResolutionFragment : Fragment() {
         }
 
         resolutionViewModel.physicalResolutionMap.observe(viewLifecycleOwner) {
-            binding.textResolution.text = "Physical ${it?.get("height").toString()}x${
-                it?.get("width").toString()
-            }; DPI ${it?.get("dpi").toString()}"
+            if (it == null) return@observe
+            binding.textResolution.text = "Physical ${it["height"]}x${it["width"]}; DPI ${it["dpi"]}"
         }
         resolutionViewModel.resolutionMap.observe(viewLifecycleOwner) {
             textHeight.setText(it?.get("height")?.toInt()?.toString())

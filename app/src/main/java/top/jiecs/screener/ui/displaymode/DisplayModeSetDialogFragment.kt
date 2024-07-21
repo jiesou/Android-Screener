@@ -2,9 +2,9 @@ package top.jiecs.screener.ui.displaymode
 
 import android.app.Dialog
 import android.os.Bundle
-import android.view.LayoutInflater
 import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
@@ -24,7 +24,7 @@ class DisplayModeSetDialogFragment : DialogFragment() {
     private val displayModeViewModel: DisplayModeViewModel by viewModels({ displayModeFragment!! })
 
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
-        _binding = DialogDisplayModeSetBinding.inflate(LayoutInflater.from(context))
+        _binding = DialogDisplayModeSetBinding.inflate(layoutInflater)
 
         return MaterialAlertDialogBuilder(requireContext())
             .setTitle(getString(R.string.new_display_mode))
@@ -38,7 +38,7 @@ class DisplayModeSetDialogFragment : DialogFragment() {
     }
 
     private fun newDisplayMode() {
-        val resolutionFragment = binding.resolutionFragment.getFragment<ResolutionFragment>()
+        val resolutionFragment = childFragmentManager.findFragmentById(R.id.resolution_fragment) as ResolutionFragment
 
         val displayMode = DisplayModeViewModel.DisplayMode(
             resolutionFragment.binding.resolutionEditor.textHeight.editText?.text.toString()
