@@ -43,9 +43,13 @@ class DisplayModeRecyclerViewAdapter(
         holder.editButton.setOnClickListener {
         }
         holder.removeButton.setOnClickListener {
-            displayModeViewModel.list.value?.removeAt(position)
-            fragmentScope.launch {
-                DataStoreManager().save(displayModeViewModel.list.value!!)
+            val currentPosition = holder.bindingAdapterPosition
+            displayModeViewModel.list.value?.let {
+                if (currentPosition > it.size - 1) return@setOnClickListener
+                it.removeAt(currentPosition)
+                fragmentScope.launch {
+                    DataStoreManager().save(it)
+                }
             }
         }
     }
@@ -65,6 +69,4 @@ class DisplayModeRecyclerViewAdapter(
         this.list.addAll(newList)
         diffResult.dispatchUpdatesTo(this)
     }
-
-
 }
