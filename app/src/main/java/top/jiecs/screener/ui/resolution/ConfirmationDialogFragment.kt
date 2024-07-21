@@ -64,7 +64,7 @@ class ConfirmationDialogFragment : DialogFragment() {
     private fun startConfirmCountdown() {
         confirmationDialogViewModel.confirmCountdownJob =
             CoroutineScope(Dispatchers.Main).launch {
-                for (countdown in 3 downTo 0) {
+                for (countdown in 9 downTo 0) {
                     confirmationDialogViewModel.confirmCountdown.postValue(countdown)
                     delay(1000)
                 }
