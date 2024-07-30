@@ -11,6 +11,7 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 import top.jiecs.screener.databinding.FragmentDisplayModeItemBinding
 import top.jiecs.screener.ui.displaymode.DisplayModeViewModel.DisplayMode
+import top.jiecs.screener.units.ApiCaller
 
 /**
  * [RecyclerView.Adapter] that can display a [DisplayMode].
@@ -21,6 +22,8 @@ class DisplayModeRecyclerViewAdapter(
 ) : RecyclerView.Adapter<DisplayModeRecyclerViewAdapter.ViewHolder>() {
 
     private val list: MutableList<DisplayMode> = mutableListOf()
+
+    private val apiCaller = ApiCaller()
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
 
@@ -37,9 +40,17 @@ class DisplayModeRecyclerViewAdapter(
     override fun getItemCount(): Int = list.size
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        val displayMode = list[position]
-        holder.displayModeText.text = displayMode.toString()
+        holder.displayModeText.text = list[position].toString()
 
+        holder.applyButton.setOnClickListener {
+            val currentPosition = holder.bindingAdapterPosition
+            val displayMode = list[currentPosition]
+            apiCaller.applyResolution(
+                displayMode.resolutionHeight,
+                displayMode.resolutionWidth,
+                displayMode.dpi
+            )
+        }
         holder.editButton.setOnClickListener {
         }
         holder.removeButton.setOnClickListener {
@@ -57,6 +68,7 @@ class DisplayModeRecyclerViewAdapter(
     inner class ViewHolder(binding: FragmentDisplayModeItemBinding) :
         RecyclerView.ViewHolder(binding.root) {
         val displayModeText: TextView = binding.displayModeText
+        val applyButton: Button = binding.applyButton
         val editButton: Button = binding.editButton
         val removeButton: Button = binding.removeButton
     }

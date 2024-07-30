@@ -123,9 +123,9 @@ class ResolutionFragment : Fragment() {
             if (mainViewModel.shizukuPermissionGranted.value != true) return@setOnClickListener
             if (!checkValidResolution(null, null)) return@setOnClickListener
             apiCaller.applyResolution(
-                scaledHeight.toInt(),
-                scaledWidth.toInt(),
-                scaledDpi.toInt()
+                scaledHeight,
+                scaledWidth,
+                scaledDpi
             )
             val navController = findNavController()
             navController.navigate(R.id.nav_resolution_confirmation)
