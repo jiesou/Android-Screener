@@ -7,7 +7,7 @@ import androidx.lifecycle.ViewModel
 class FrameRateViewModel : ViewModel() {
 
     private val _text = MutableLiveData<String>().apply {
-        value = "This is frameRate Fragment"
+        value = "frameRate feature is not implemented yet"
     }
     val text: LiveData<String> = _text
 }
