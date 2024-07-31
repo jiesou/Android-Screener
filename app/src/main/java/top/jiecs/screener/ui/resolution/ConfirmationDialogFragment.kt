@@ -24,30 +24,7 @@ class ConfirmationDialogFragment : DialogFragment() {
     private val confirmationDialogViewModel: ConfirmationDialogViewModel by viewModels()
 
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
-        isCancelable = false
-        dialog = MaterialAlertDialogBuilder(requireContext())
-            .setTitle(getString(R.string.success))
-            .setMessage(getString(R.string.reset_hint))
-            .setPositiveButton(getString(R.string.looks_fine), null)
-            .setNegativeButton(getString(R.string.undo_changes), null)
-            .create()
         apiCaller = ApiCaller()
-
-        dialog.setOnShowListener {
-            negativeButton = dialog.getButton(DialogInterface.BUTTON_NEGATIVE)
-
-            negativeButton.setOnClickListener {
-                negativeButton.text = getString(R.string.undo_changes, getString(R.string.undone))
-                apiCaller.resetResolution()
-            }
-
-            if (confirmationDialogViewModel.confirmCountdownJob == null) {
-                startConfirmCountdown()
-            } else {
-                confirmationDialogViewModel.confirmCountdown.postValue(0)
-            }
-        }
-
         confirmationDialogViewModel.confirmCountdown.observe(this) {
             if (!::negativeButton.isInitialized) return@observe
             if (it == 0) {
@@ -58,13 +35,36 @@ class ConfirmationDialogFragment : DialogFragment() {
             }
         }
 
+        isCancelable = false
+        dialog = MaterialAlertDialogBuilder(requireContext())
+            .setTitle(getString(R.string.success))
+            .setMessage(getString(R.string.reset_hint))
+            .setPositiveButton(getString(R.string.looks_fine), null)
+            .setNegativeButton(getString(R.string.undo_changes), null)
+            .create()
+        dialog.setOnShowListener { onDialogShow() }
         return dialog
+    }
+
+    private fun onDialogShow() {
+        negativeButton = dialog.getButton(DialogInterface.BUTTON_NEGATIVE)
+
+        negativeButton.setOnClickListener {
+            negativeButton.text = getString(R.string.undo_changes, getString(R.string.undone))
+            apiCaller.resetResolution()
+        }
+
+        if (confirmationDialogViewModel.confirmCountdownJob == null) {
+            startConfirmCountdown()
+        } else {
+            confirmationDialogViewModel.confirmCountdown.postValue(0)
+        }
     }
 
     private fun startConfirmCountdown() {
         confirmationDialogViewModel.confirmCountdownJob =
             CoroutineScope(Dispatchers.Main).launch {
-                for (countdown in 3 downTo 0) {
+                for (countdown in 9 downTo 0) {
                     confirmationDialogViewModel.confirmCountdown.postValue(countdown)
                     delay(1000)
                 }

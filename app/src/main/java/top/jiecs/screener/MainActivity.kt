@@ -62,6 +62,7 @@ class MainActivity : AppCompatActivity(),
 
     override fun onResume() {
         super.onResume()
+
         if (checkPermission()) {
             mainViewModel.shizukuPermissionGranted.value = true
         } else {
@@ -73,27 +74,30 @@ class MainActivity : AppCompatActivity(),
     }
 
     private fun checkPermission(): Boolean {
-        if (Shizuku.isPreV11()) {
-            // Pre-v11 is unsupported
+        try {
+            if (Shizuku.isPreV11()) {
+                // Pre-v11 is unsupported
+                return false
+            }
+
+            return when {
+                Shizuku.checkSelfPermission() == PackageManager.PERMISSION_GRANTED -> {
+                    // Granted
+                    true
+                }
+                Shizuku.shouldShowRequestPermissionRationale() -> {
+                    // Users choose "Deny and don't ask again"
+                    false
+                }
+                else -> {
+                    // Request the permission
+                    Shizuku.requestPermission(0)
+                    false
+                }
+            }
+        } catch (e: Exception) {
+            // Handle any exceptions here
             return false
-        }
-
-        return when {
-            Shizuku.checkSelfPermission() == PackageManager.PERMISSION_GRANTED -> {
-                // Granted
-                true
-            }
-
-            Shizuku.shouldShowRequestPermissionRationale() -> {
-                // Users choose "Deny and don't ask again"
-                false
-            }
-
-            else -> {
-                // Request the permission
-                Shizuku.requestPermission(0)
-                false
-            }
         }
     }
 

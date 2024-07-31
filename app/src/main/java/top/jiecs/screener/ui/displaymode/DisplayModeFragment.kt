@@ -10,16 +10,21 @@ import android.view.ViewGroup
 import androidx.core.view.MenuHost
 import androidx.core.view.MenuProvider
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.lifecycleScope
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import top.jiecs.screener.R
 
 /**
  * A fragment for configuring the display modes
  */
 class DisplayModeFragment : Fragment() {
+    private val viewModel: DisplayModeViewModel by viewModels()
+    private lateinit var mAdapter: DisplayModeRecyclerViewAdapter
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -28,9 +33,15 @@ class DisplayModeFragment : Fragment() {
 
         // Set the adapter
         if (view is RecyclerView) {
+            mAdapter = DisplayModeRecyclerViewAdapter(viewModel, lifecycleScope)
+
             with(view) {
                 layoutManager = LinearLayoutManager(context)
-                adapter = DisplayModeRecyclerViewAdapter(DisplayModeContent.DISPLAY_MODES)
+                adapter = mAdapter
+            }
+
+            viewModel.list.observe(viewLifecycleOwner) {
+                mAdapter.updateList(it)
             }
         }
 
@@ -51,19 +62,7 @@ class DisplayModeFragment : Fragment() {
                 // Handle the menu selection
                 return when (menuItem.itemId) {
                     R.id.new_display_mode -> {
-                        // create dialog to add a new display mode with custom layout
-                        context?.let {
-                            MaterialAlertDialogBuilder(it)
-                                .setTitle(R.string.new_display_mode)
-                                .setView(R.layout.dialog_resolution_content)
-                                .setPositiveButton(R.string.apply) { _, _ ->
-                                    // Respond to positive button press
-                                }
-                                .setNegativeButton(R.string.cancel) { _, _ ->
-                                    // Respond to negative button press
-                                }
-                                .show()
-                        }
+                        findNavController().navigate(R.id.nav_display_mode_set)
                         true
                     }
 

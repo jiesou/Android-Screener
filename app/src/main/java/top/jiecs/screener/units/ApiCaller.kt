@@ -105,14 +105,19 @@ class ApiCaller {
         return emptyMap()
     }
 
-    fun applyResolution(height: Int, width: Int, dpi: Int) {
-        HiddenApiBypass.invoke(
-            iWindowManager::class.java, iWindowManager,
-            "setForcedDisplaySize", Display.DEFAULT_DISPLAY, width, height
+    fun applyResolution(height: Float, width: Float, dpi: Float) {
+        val resolution = mapOf(
+            "height" to height.toInt(),
+            "width" to width.toInt(),
+            "dpi" to dpi.toInt()
         )
         HiddenApiBypass.invoke(
             iWindowManager::class.java, iWindowManager,
-            "setForcedDisplayDensityForUser", Display.DEFAULT_DISPLAY, dpi, 0
+            "setForcedDisplaySize", Display.DEFAULT_DISPLAY, resolution["width"], resolution["height"]
+        )
+        HiddenApiBypass.invoke(
+            iWindowManager::class.java, iWindowManager,
+            "setForcedDisplayDensityForUser", Display.DEFAULT_DISPLAY, resolution["dpi"], 0
         )
     }
 
