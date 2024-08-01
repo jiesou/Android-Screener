@@ -14,10 +14,13 @@ A simple Shizuku tool for easily adjusting screen resolution and frame rate
 - [x] Get Shizuku permissions
 - [x] Basic resolution changing function
 - [x] Automatically undo if no operation within 10 seconds
+- [x] Basic DPI density changing function
+- [ ] Basic frame rate changing function
 - [ ] Multi-user support
-- [ ] Basic DPI density changing function (depends on multi-user support)
-- [ ] Automatically calculate dpi and resolution based on scaling
-- [ ] Store display mode, QS switching, etc.
+- [x] Automatically calculate dpi and resolution based on scaling
+- [ ] Store display mode and apply it
+- [ ] Edit display mode
+- [ ] QS switching
 
 ## Notice
 
@@ -30,5 +33,7 @@ adb shell wm density reset
 
 ## Download
 
-The debug version can currently be downloaded at Github Actions.
-BTW: If the artifacts in Github Actions is expired and cannot be downloaded, you can *fork* this project and rebuild it.
+The apk on the Releases page is updated manually and will not be synchronized with the latest updates, and the program is not yet complete enough to be “released”!
+
+So it's best to download the apk from the [Actions](https://github.com/jiesou/Android-Screener/actions) page first, if the artifacts in Github Actions is expired and cannot be downloaded, you can *fork* this project and rebuild it.
+
