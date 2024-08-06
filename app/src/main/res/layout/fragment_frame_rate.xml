@@ -10,13 +10,17 @@
         android:id="@+id/text_frame_rate"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="8dp"
-        android:layout_marginEnd="8dp"
-        android:textAlignment="center"
-        android:textSize="20sp"
+        android:textSize="@dimen/text_size"
+        app:layout_constraintBottom_toTopOf="@+id/bt_apply"
+        tools:text="111" />
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"
+        android:id="@+id/bt_apply"/>
+
 </androidx.constraintlayout.widget.ConstraintLayout>
