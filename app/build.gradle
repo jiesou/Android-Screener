@@ -35,8 +35,15 @@ android {
     }
 
     buildFeatures {
+        buildConfig true
         viewBinding true
         aidl true
+    }
+
+    sourceSets {
+        main {
+            aidl.srcDirs = ['src/main/aidl', 'src/main/java']
+        }
     }
 
 }

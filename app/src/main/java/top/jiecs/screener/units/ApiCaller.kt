@@ -3,9 +3,6 @@ package top.jiecs.screener.units
 import android.annotation.SuppressLint
 import android.content.pm.PackageManager
 import android.graphics.Point
-import android.os.ParcelFileDescriptor
-import android.os.UserHandle
-import android.provider.Settings
 import android.view.Display
 import moe.shizuku.server.IShizukuService
 import org.lsposed.hiddenapibypass.HiddenApiBypass
@@ -15,7 +12,6 @@ import rikka.shizuku.SystemServiceHelper
 import top.jiecs.screener.MyApplication
 import top.jiecs.screener.services.UserServiceProvider
 import java.lang.reflect.Field
-import java.lang.reflect.Method
 
 
 class ApiCaller {
@@ -37,32 +33,30 @@ class ApiCaller {
         }
 
     @SuppressLint("PrivateApi")
-    fun fetchUsers(): List<Map<String, Any>> {
-        try {
-            val users = HiddenApiBypass.invoke(
-                iUserManager::class.java,
-                iUserManager,
-                "getUsers",
-                true,
-                true,
-                true
-            ) as List<*>
-            val userInfoFields =
-                HiddenApiBypass.getInstanceFields(Class.forName("android.content.pm.UserInfo")) as List<Field>
+    fun fetchUsers(): List<Map<String, Any>> = runCatching {
+        val users = HiddenApiBypass.invoke(
+            iUserManager::class.java,
+            iUserManager,
+            "getUsers",
+            true,
+            true,
+            true
+        ) as List<*>
+        val userInfoFields =
+            HiddenApiBypass.getInstanceFields(Class.forName("android.content.pm.UserInfo")) as List<Field>
 
-            val idField = userInfoFields.first { it.name == "id" }
-            val nameField = userInfoFields.first { it.name == "name" }
+        val idField = userInfoFields.first { it.name == "id" }
+        val nameField = userInfoFields.first { it.name == "name" }
 
-            return users.map { userInfo ->
-                mapOf(
-                    "id" to idField.get(userInfo)!!,
-                    "name" to nameField.get(userInfo)!!
-                )
-            }
-        } catch (e: Exception) {
-            e.printStackTrace()
+        return users.map { userInfo ->
+            mapOf(
+                "id" to idField.get(userInfo)!!,
+                "name" to nameField.get(userInfo)!!
+            )
         }
-        return emptyList()
+    }.getOrElse {
+        it.printStackTrace()
+        emptyList()
     }
 
     fun fetchScreenResolution(): Map<String, Map<String, Float>> = runCatching {

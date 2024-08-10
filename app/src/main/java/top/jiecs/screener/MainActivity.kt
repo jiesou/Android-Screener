@@ -1,5 +1,6 @@
 package top.jiecs.screener
 
+import android.content.ComponentName
 import android.content.pm.PackageManager
 import android.os.Bundle
 import androidx.activity.enableEdgeToEdge
@@ -18,6 +19,8 @@ import com.google.android.material.snackbar.Snackbar
 import rikka.shizuku.Shizuku
 
 import top.jiecs.screener.databinding.ActivityMainBinding
+import top.jiecs.screener.services.UserService
+import top.jiecs.screener.services.UserServiceProvider
 import top.jiecs.screener.ui.displaymode.DisplayModeFragment
 
 
@@ -26,6 +29,15 @@ class MainActivity : AppCompatActivity(),
 
     private lateinit var binding: ActivityMainBinding
     private val mainViewModel: MainViewModel by viewModels()
+
+    private val userServiceArgs: Shizuku.UserServiceArgs =
+        Shizuku.UserServiceArgs(
+            ComponentName(BuildConfig.APPLICATION_ID, UserService::class.java.name),
+        )
+            .daemon(false)
+            .processNameSuffix("service")
+            .debuggable(BuildConfig.DEBUG)
+            .version(BuildConfig.VERSION_CODE)
 
     override fun onCreate(savedInstanceState: Bundle?) {
         enableEdgeToEdge()
@@ -58,6 +70,10 @@ class MainActivity : AppCompatActivity(),
                 ).show()
             }
         }
+
+        mainViewModel.shizukuPermissionGranted.observe(this) {
+            if (it) bindUserServices()
+        }
     }
 
     override fun onResume() {
@@ -73,32 +89,26 @@ class MainActivity : AppCompatActivity(),
         }
     }
 
-    private fun checkPermission(): Boolean {
-        try {
-            if (Shizuku.isPreV11()) {
-                // Pre-v11 is unsupported
-                return false
-            }
+    private fun bindUserServices() {
+        Shizuku.bindUserService(userServiceArgs, UserServiceProvider.connection)
+    }
 
-            return when {
-                Shizuku.checkSelfPermission() == PackageManager.PERMISSION_GRANTED -> {
-                    // Granted
-                    true
-                }
-                Shizuku.shouldShowRequestPermissionRationale() -> {
-                    // Users choose "Deny and don't ask again"
-                    false
-                }
-                else -> {
-                    // Request the permission
-                    Shizuku.requestPermission(0)
-                    false
-                }
+    private fun checkPermission(): Boolean = runCatching {
+        if (Shizuku.isPreV11()) return false
+        // Pre-v11 is unsupported
+
+        return when {
+            Shizuku.checkSelfPermission() == PackageManager.PERMISSION_GRANTED -> true // Granted
+            Shizuku.shouldShowRequestPermissionRationale() -> false // Users choose "Deny and don't ask again"
+            else -> {
+                // Request the permission
+                Shizuku.requestPermission(0)
+                false
             }
-        } catch (e: Exception) {
-            // Handle any exceptions here
-            return false
         }
+    }.getOrElse {
+        it.printStackTrace()
+        false
     }
 
     override fun onPreferenceStartFragment(

@@ -11,10 +11,6 @@
         android:roundIcon="@mipmap/ic_launcher"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <service
-            android:name=".services.UserService"
-            android:enabled="true"
-            android:exported="true"></service>
 
         <activity
             android:name=".MainActivity"

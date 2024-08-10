@@ -11,7 +11,7 @@ object UserServiceProvider {
 
     private val tag = this.javaClass.simpleName
 
-    private var connection = Connection()
+    var connection = Connection()
 
     fun run(
         onFail: () -> Unit = {},
@@ -39,7 +39,7 @@ object UserServiceProvider {
         }
     }
 
-    private fun isConnected(): Boolean {
+    fun isConnected(): Boolean {
         return connection.iUserService != null
     }
 }
