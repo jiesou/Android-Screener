@@ -3,6 +3,7 @@ package top.jiecs.screener.units
 import android.annotation.SuppressLint
 import android.content.pm.PackageManager
 import android.graphics.Point
+import android.util.Log
 import android.view.Display
 import moe.shizuku.server.IShizukuService
 import org.lsposed.hiddenapibypass.HiddenApiBypass
@@ -170,9 +171,11 @@ class ApiCaller {
 
     fun applyFrameRate(frameRate: Int) {
 
-        UserServiceProvider.run {
-            applyPeakRefreshRate(frameRate)
-        }
+        UserServiceProvider.run (onConnected = {
+            if (applyPeakRefreshRate(frameRate)) {
+                Log.d("12345678", "Frame rate applied.")
+            }
+        })
 
 //        val contentResolver = MyApplication.context.contentResolver
 //        val systemSettingsFields =

@@ -11,6 +11,5 @@ interface IUserService {
     void destroy() = 16777114;
     int getUid() = 1000;
 
-    void setContentResolver(ContentResolver contentResolver);
-    boolean applyPeakRefreshRate(int frameRate) = 2;
+    boolean applyPeakRefreshRate(int frameRate) = 2000;
 }
