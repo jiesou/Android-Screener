@@ -37,3 +37,8 @@ The apk on the Releases page is updated manually and will not be synchronized wi
 
 So it's best to download the apk from the [Actions](https://github.com/jiesou/Android-Screener/actions) page first, if the artifacts in Github Actions is expired and cannot be downloaded, you can *fork* this project and rebuild it.
 
+## Sponsor
+
+![17511122661907388747535166825349](https://github.com/user-attachments/assets/a7df8c8d-a31d-42e9-b4c7-fd17e5b4340a)
+
+[Best Asian CDN, Edge, and Secure Solutions - Tencent EdgeOne](https://edgeone.ai/zh?from=github)
